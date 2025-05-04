@@ -3,14 +3,16 @@ import { ClerkLoaded, useUser, SignInButton, UserButton, SignedIn } from "@clerk
 import Link from "next/link";
 import Form from "next/form"
 import { PackageIcon, TrolleyIcon } from "@sanity/icons";
+import useBasketStore from "@/store/store";
 export const Header = () => {
     const { user } = useUser();
+    const {items} = useBasketStore();
+    const itemCount = items.reduce((total, item) => total + item.quantity, 0);
     const createPassKey = () => {
-        try{
+        try {
             const passkey = user?.createPasskey();
-            console.log(passkey)
-        }catch(error){
-            console.log(JSON.stringify(error,null,2))
+        } catch (error) {
+            console.log(JSON.stringify(error, null, 2))
         }
     }
     return <header className="flex flex-wrap justify-between items-center px-4 py-2">
@@ -34,7 +36,7 @@ export const Header = () => {
 
                     className="flex flex-1 relative justify-center sm:justify-start sm:flex-none itrems-center space-x-2 bg-blue-500 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded">
                     <TrolleyIcon className="w-6 h-6" />
-                    {/* span item count once global state is implemented */}
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">{itemCount}</span>
                     <span>My Basket</span>
                 </Link>
                 <ClerkLoaded>

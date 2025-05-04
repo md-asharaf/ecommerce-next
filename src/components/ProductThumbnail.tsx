@@ -11,13 +11,13 @@ const ProductThumbnail = ({ product }: ProductThumbnailProps) => {
     return (
         <Link
             href={`/product/${product?.slug?.current}`}
-            className={`group flex flex-col bg-white rounded-lg border shadow-sm border-gray-200 transition-all duration-200 overflow-hidden hover:shadow-md ${isOutOfStock ? 'opacity-50' : ''}`}
+            className={`group flex flex-col bg-white rounded-lg border shadow-sm border-gray-200 transition-all duration-200 overflow-hidden hover:shadow-md ${isOutOfStock && 'opacity-50'}`}
         >
             <div className='relative w-full h-full aspect-square overflow-hidden'>
                 {
                     product?.image && (
                         <Image src={imageUrl(product.image).url()} fill alt={product.name || "Product Image"}
-                            sizes='(max-width : 768px) 100vw, (max-width: 1200px), 50vw, 33vw'
+                            sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
                             className='object-contain transition-transform duration-300 group-hover:scale-105'
                         />
                     )
@@ -36,8 +36,8 @@ const ProductThumbnail = ({ product }: ProductThumbnailProps) => {
                 </h2>
                 <p className='text-sm mt-2 text-gray-600 line-clamp-2'>
                     {
-                        product?.descrription?.map((block) =>
-                            block._type == "block" ? block.children?.map((child) => child.text).join() : ""
+                        product?.description?.map((block) =>
+                            block._type == "block" ? block.children?.map((child) => child.text).join(" ") : ""
                         ).join() || "No description available"
                     }
                 </p>

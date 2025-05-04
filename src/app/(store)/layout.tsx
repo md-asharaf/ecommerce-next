@@ -3,7 +3,7 @@ import {
   ClerkProvider,
 } from '@clerk/nextjs'
 import '../globals.css'
-import { Header } from '@/components/header'
+import { Header } from '@/components/Header'
 import { SanityLive } from '@/sanity/lib/live'
 
 export const metadata: Metadata = {

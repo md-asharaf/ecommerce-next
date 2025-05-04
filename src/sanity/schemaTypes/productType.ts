@@ -32,7 +32,7 @@ export const productType = defineType({
             },
         }),
         defineField({
-            name: "descrription",
+            name: "description",
             title: "Description",
             type: "blockContent",
         }),

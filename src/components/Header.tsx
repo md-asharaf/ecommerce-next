@@ -3,14 +3,14 @@ import { ClerkLoaded, useUser, SignInButton, UserButton, SignedIn } from "@clerk
 import Link from "next/link";
 import Form from "next/form"
 import { PackageIcon, TrolleyIcon } from "@sanity/icons";
-import useBasketStore from "@/store/store";
+import { useBasketStore } from "@/store/store";
 export const Header = () => {
     const { user } = useUser();
-    const {items} = useBasketStore();
+    const { items } = useBasketStore();
     const itemCount = items.reduce((total, item) => total + item.quantity, 0);
-    const createPassKey = () => {
+    const createPassKey = async () => {
         try {
-            const passkey = user?.createPasskey();
+            const passkey = await user?.createPasskey();
         } catch (error) {
             console.log(JSON.stringify(error, null, 2))
         }

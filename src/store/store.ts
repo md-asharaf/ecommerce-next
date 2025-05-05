@@ -17,7 +17,7 @@ interface BasketState {
     getItemCount: (productId: string) => number;
 }
 
-const useBasketStore = create<BasketState>()(
+export const useBasketStore = create<BasketState>()(
     persist(
         (set, get) => ({
             items: [],
@@ -50,7 +50,7 @@ const useBasketStore = create<BasketState>()(
             },
             getTotalPrice: () => {
                 return get().items.reduce((total, item) => {
-                    return total + (item.product.price ?? 0 * item.quantity);
+                    return total + ((item.product.price ?? 0) * item.quantity);
                 }, 0);
             },
             getTotalItems: () => {
@@ -70,4 +70,3 @@ const useBasketStore = create<BasketState>()(
         }
     )
 );
-export default useBasketStore;

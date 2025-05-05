@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from 'react'
 import { Product } from '../../sanity.types'
-import useBasketStore from '@/store/store'
+import { useBasketStore } from '@/store/store'
 interface AddToBasketButtonProps {
     product: Product,
     disabled?: boolean

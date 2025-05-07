@@ -4,12 +4,12 @@ import { imageUrl } from "@/lib/imageUrl"
 import { SignInButton, useAuth, useUser } from "@clerk/nextjs"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useBasketStore } from "@/store/store"
 import { loadScript } from "@/lib/loadScript"
 import { RazorpayOptions } from "@/types/razorpay"
 import { createRazorpayOrder, Metadata } from "@/actions/createRazorpayOrder"
-import { RayzorpayCheckoutResponse, verifyRazorpaySignature } from "@/actions/verifyRazorpaySignature"
+import { RazorpaySuccessResponse, verifyRazorpaySignature } from "@/actions/verifyRazorpaySignature"
 const BasketPage = () => {
     const groupedItems = useBasketStore((state) => state.items)
     const totalPrice = useBasketStore((state) => state.getTotalPrice())
@@ -17,7 +17,6 @@ const BasketPage = () => {
     const { isSignedIn } = useAuth();
     const { user } = useUser();
     const router = useRouter();
-    const [isClient, setIsClient] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const handleCheckout = async () => {
         if (!isSignedIn) return;
@@ -33,21 +32,37 @@ const BasketPage = () => {
             if (!order) {
                 throw new Error("Order creation failed");
             }
-            const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
-            if (!res) {
-                console.log("Failed to load Razorpay script");
+            await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+            if (typeof window === "undefined" || !window.Razorpay) {
+                console.error("Razorpay SDK not available");
                 return;
             }
             const options: RazorpayOptions = {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "",
                 amount: order.amount as number,
+                order_id: order.id,
                 currency: order.currency,
-                handler: async (response: RayzorpayCheckoutResponse) => {
-                    await verifyRazorpaySignature(response, order.id)
+                prefill: {
+                    name: metadata.customerName,
+                    email: metadata.customerEmail,
+                },
+                theme: {
+                    color: "#121212"
+                },
+                notes: order.notes,
+                handler: async (response: RazorpaySuccessResponse) => {
+                    const url = await verifyRazorpaySignature(response);
+                    if (url) {
+                        router.push(url)
+                    }
                 }
             };
-            const checkout = new window.Razorpay(options);
-            checkout.open();
+            try {
+                const razorPopup = new window.Razorpay(options);
+                razorPopup.open();
+            } catch (error) {
+                throw new Error("Error opening Razorpay checkout");
+            }
         } catch (error) {
             console.error("Error during checkout", error);
         } finally {
@@ -55,8 +70,6 @@ const BasketPage = () => {
         }
 
     }
-    useEffect(() => { setIsClient(true) }, [])
-    if (!isClient) return null
     if (groupedItems.length == 0) {
         return <div className="container mx-auto p-4 flex flex-col items-center justify-center min-h-[50vh]">
             <h1 className="text-2xl font-bold mb-6 text-gray-800">Your Basket</h1>

@@ -10,7 +10,7 @@ const ProductThumbnail = ({ product }: ProductThumbnailProps) => {
     const isOutOfStock = product?.stock === 0;
     return (
         <Link
-            href={`/product/${product?.slug?.current}`}
+            href={`/products/${product?.slug?.current}`}
             className={`group flex flex-col bg-white rounded-lg border shadow-sm border-gray-200 transition-all duration-200 overflow-hidden hover:shadow-md ${isOutOfStock && 'opacity-50'}`}
         >
             <div className='relative w-full h-full aspect-square overflow-hidden'>

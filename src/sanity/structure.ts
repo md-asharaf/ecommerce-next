@@ -6,7 +6,7 @@ export const structure: StructureResolver = (S) =>
         .title("Shopr Ecommerce CMS")
         .items([
             // S.documentTypeListItem("post").title("Posts"),
-            S.documentTypeListItem("category").title("Categories"),
+            S.documentTypeListItem("category"),
             // S.documentTypeListItem("author").title("Authors"),
             S.divider(),
             ...S.documentTypeListItems().filter(

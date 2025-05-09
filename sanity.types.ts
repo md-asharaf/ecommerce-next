@@ -90,13 +90,13 @@ export type Order = {
   _updatedAt: string;
   _rev: string;
   orderNumber?: string;
-  stripeCheckoutSessionId?: string;
-  stripeCustomerId?: string;
+  razorpaySignature?: string;
+  razorpayReceiptId?: string;
   clerkUserId?: string;
   customerName?: string;
   email?: string;
-  stripePaymentIntentId?: string;
-  product?: Array<{
+  razorpayPaymentId?: string;
+  products?: Array<{
     product?: {
       _ref: string;
       _type: "reference";
@@ -307,28 +307,82 @@ export type MY_ORDERS_QUERYResult = Array<{
   _updatedAt: string;
   _rev: string;
   orderNumber?: string;
-  stripeCheckoutSessionId?: string;
-  stripeCustomerId?: string;
+  razorpaySignature?: string;
+  razorpayReceiptId?: string;
   clerkUserId?: string;
   customerName?: string;
   email?: string;
-  stripePaymentIntentId?: string;
-  product?: Array<{
-    product?: {
-      _ref: string;
-      _type: "reference";
-      _weak?: boolean;
-      [internalGroqTypeReferenceTo]?: "product";
-    };
+  razorpayPaymentId?: string;
+  products: Array<{
+    product: {
+      _id: string;
+      _type: "product";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      name?: string;
+      slug?: Slug;
+      image?: {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+      };
+      description?: Array<{
+        children?: Array<{
+          marks?: Array<string>;
+          text?: string;
+          _type: "span";
+          _key: string;
+        }>;
+        style?: "blockquote" | "h1" | "h2" | "h3" | "h4" | "normal";
+        listItem?: "bullet";
+        markDefs?: Array<{
+          href?: string;
+          _type: "link";
+          _key: string;
+        }>;
+        level?: number;
+        _type: "block";
+        _key: string;
+      } | {
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        alt?: string;
+        _type: "image";
+        _key: string;
+      }>;
+      price?: number;
+      categories?: Array<{
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        _key: string;
+        [internalGroqTypeReferenceTo]?: "category";
+      }>;
+      stock?: number;
+    } | null;
     quantity?: number;
     _key: string;
-  }>;
+  }> | null;
   price?: number;
   currency?: string;
   amountDiscount?: number;
   status?: "cancelled" | "delivered" | "paid" | "pending" | "shipped";
   orderDate?: string;
-  products: null;
 }>;
 
 // Source: ./src/sanity/lib/products/getAllProducts.ts

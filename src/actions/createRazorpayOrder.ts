@@ -2,7 +2,7 @@
 import { BasketItem } from "@/store/store";
 import { razorpay } from "@/lib/razorpay";
 export type Metadata = {
-    orderNumber: string;
+    receiptNumber: string;
     customerName: string;
     customerEmail: string;
     clerkUserId: string;
@@ -19,13 +19,16 @@ export const createRazorpayOrder = async (
         const totalPrice = items.reduce((total, { product, quantity }) => {
             return total + (product.price ?? 0) * quantity;
         }, 0);
-        const { orderNumber, ...rest } = metadata;
+        const { receiptNumber, ...rest } = metadata;
         const order = await razorpay.orders.create({
             amount: totalPrice * 100,
             currency: "INR",
-            receipt: orderNumber,
+            receipt: `receipt_${receiptNumber}`,
             payment_capture: true,
-            notes: rest,
+            notes: {
+                ...rest,
+                line_items: JSON.stringify(items),
+            },
         });
         return order || null;
     } catch (error) {

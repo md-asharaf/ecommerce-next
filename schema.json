@@ -453,14 +453,14 @@
         },
         "optional": true
       },
-      "stripeCheckoutSessionId": {
+      "razorpaySignature": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
         "optional": true
       },
-      "stripeCustomerId": {
+      "razorpayReceiptId": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
@@ -488,14 +488,14 @@
         },
         "optional": true
       },
-      "stripePaymentIntentId": {
+      "razorpayPaymentId": {
         "type": "objectAttribute",
         "value": {
           "type": "string"
         },
         "optional": true
       },
-      "product": {
+      "products": {
         "type": "objectAttribute",
         "value": {
           "type": "array",

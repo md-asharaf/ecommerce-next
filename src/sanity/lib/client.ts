@@ -9,8 +9,9 @@ export const client = createClient({
     apiVersion,
     useCdn: true,
     stega: {
-        studioUrl: vercelUrl
-            ? `https://${vercelUrl}/studio`
-            : `${baseUrl}/studio`,
+        studioUrl:
+            process.env.NODE_ENV == "production"
+                ? `https://${vercelUrl}/studio`
+                : `${baseUrl}/studio`,
     },
 });

@@ -26,7 +26,7 @@ const BasketPage = () => {
                 clerkUserId: user!.id,
                 customerEmail: user?.emailAddresses?.[0].emailAddress || "Unknown",
                 customerName: user?.fullName || "Unknown",
-                orderNumber: crypto.randomUUID()
+                receiptNumber: crypto.randomUUID()
             }
             const order = await createRazorpayOrder(groupedItems, metadata);
             if (!order) {

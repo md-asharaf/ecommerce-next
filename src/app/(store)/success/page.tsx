@@ -18,7 +18,7 @@ const SuccessPage = () => {
   }, [orderId, clearBasket])
   if (!orderId) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      <div className="flex flex-col items-center justify-center min-h-full bg-gray-50">
         <div className="bg-white p-12 rounded-xl shadow-lg max-w-2xl w-full mx-4 flex items-center flex-col">
           <h1 className="text-4xl font-bold mb-6 text-center">Order not found</h1>
           <p className="text-lg text-gray-700 mb-4 text-center">Please check your order number.</p>
@@ -30,8 +30,8 @@ const SuccessPage = () => {
     )
   }
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-      <div className="bg-white p-12 rounded-xl shadow-lg max-w-2xl w-full mx-4">
+    <div className="flex flex-col items-center justify-center min-h-full bg-gray-50">
+      <div className="bg-white p-12 rounded-xl shadow-lg max-w-2xl h-full w-full mx-4">
         <div className="flex justify-center mb-8">
           <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center">
             <svg className="h-8 w-8 text-green-600"

@@ -70,7 +70,7 @@ const BasketPage = () => {
                 const razorPopup = new window.Razorpay(options);
                 razorPopup.open();
             } catch (error) {
-                throw new Error("Error opening Razorpay checkout");
+                throw error;
             }
         } catch (error) {
             console.error("Error during checkout", error);
@@ -97,7 +97,7 @@ const BasketPage = () => {
                             className="mb-4 p-4 border rounded flex items-center justify-between"
                         >
                             <div className="flex items-center cursor-pointer flex-1 min-w-0" onClick={() => {
-                                router.push(`/product/${product.slug?.current}`)
+                                router.push(`/products/${product.slug?.current}`)
                             }}>
                                 <div className="w-20 h-20 sm:w-24 flex-shrink-0 mr-4 sm:h-24">
                                     {

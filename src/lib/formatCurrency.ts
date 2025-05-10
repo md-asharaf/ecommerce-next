@@ -5,7 +5,7 @@ export const formatCurrency = (amount: number, currency: string) => {
             currency: currency.toUpperCase(),
         }).format(amount);
     } catch (error) {
-        console.error("Invalid currency", currency, amount);
+        console.error("Invalid currency", currency, amount,error);
         return `${currency.toUpperCase()} ${amount.toFixed(2)}`;
     }
 };

@@ -12,7 +12,7 @@ export const getAllCategories = async () => {
 
         return categories.data || [];
     } catch (error) {
-        console.error("Error fetching categories:");
+        console.error("Error fetching categories:",error);
         return [];
     }
 };

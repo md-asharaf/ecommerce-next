@@ -10,7 +10,7 @@ export const Header = () => {
     const itemCount = items.reduce((total, item) => total + item.quantity, 0);
     const createPassKey = async () => {
         try {
-            const passkey = await user?.createPasskey();
+            await user?.createPasskey();
         } catch (error) {
             console.log(JSON.stringify(error, null, 2))
         }

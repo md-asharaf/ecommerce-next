@@ -7,14 +7,17 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
 const SuccessPage = () => {
+  console.log("Success page");
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
   const paymentId = searchParams.get("paymentId");
   const { clearBasket } = useBasketStore((state) => state);
   useEffect(() => {
+    console.log("Success page useEffect");
     if (orderId) {
       clearBasket();
     }
+    console.log("Success page after useEffect");
   }, [orderId, clearBasket])
   if (!orderId) {
     return (
@@ -30,8 +33,8 @@ const SuccessPage = () => {
     )
   }
   return (
-    <div className="flex flex-col items-center justify-center min-h-full bg-gray-50">
-      <div className="bg-white p-12 rounded-xl shadow-lg max-w-2xl h-full w-full mx-4">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      <div className="bg-white p-12 rounded-xl shadow-lg max-w-2xl mx-4">
         <div className="flex justify-center mb-8">
           <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center">
             <svg className="h-8 w-8 text-green-600"

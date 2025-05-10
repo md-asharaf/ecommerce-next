@@ -18,6 +18,7 @@ const BasketPage = () => {
     const { user } = useUser();
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
+    const [verificationStatus, setVerificationStatus] = useState<"loading" | "success" | "error" | null>(null);
     const handleCheckout = async () => {
         if (!isSignedIn) return;
         setIsLoading(true)
@@ -26,7 +27,7 @@ const BasketPage = () => {
                 clerkUserId: user!.id,
                 customerEmail: user?.emailAddresses?.[0].emailAddress || "Unknown",
                 customerName: user?.fullName || "Unknown",
-                receiptNumber: crypto.randomUUID()
+                receiptNumber: crypto.randomUUID().slice(0, 20)
             }
             const order = await createRazorpayOrder(groupedItems, metadata);
             if (!order) {
@@ -51,11 +52,19 @@ const BasketPage = () => {
                 },
                 notes: order.notes,
                 handler: async (response: RazorpaySuccessResponse) => {
+                    setVerificationStatus("loading");
                     const url = await verifyRazorpaySignature(response);
-                    if (url) {
-                        router.push(url)
-                    }
+                    if (url) setVerificationStatus("success");
+                    else setVerificationStatus("error");
+                    setTimeout(() => {
+                        if (url) {
+                            router.push(url);
+                        } else {
+                            setVerificationStatus(null);
+                        }
+                    }, url ? 2000 : 3000);
                 }
+
             };
             try {
                 const razorPopup = new window.Razorpay(options);
@@ -153,8 +162,60 @@ const BasketPage = () => {
                     }
                 </div>
             </div>
-            <div className="h-64 lg:h-0"></div>
+            <div className="h-64 lg:h-0">
+                {/* Spacer for fixed checkout on mobile screen */}
+            </div>
         </div>
+        {verificationStatus && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+                <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col items-center">
+                    {verificationStatus === "loading" && (
+                        <>
+                            <h2 className="text-xl font-semibold text-gray-700 mb-4">Verifying payment...</h2>
+                            <div className="border-t-4 border-blue-500 h-8 w-8 rounded-full animate-spin" />
+                        </>
+                    )}
+                    {verificationStatus === "success" && (
+                        <>
+                            <h2 className="text-xl font-semibold text-green-600 mb-4">Payment Successful!</h2>
+                            <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center">
+                                <svg className="h-8 w-8 text-green-600"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M5 13l4 4L19 7"
+                                    />
+                                </svg>
+                            </div>
+                        </>
+                    )}
+                    {verificationStatus === "error" && (
+                        <>
+                            <h2 className="text-xl font-semibold text-red-600 mb-4">Payment Failed</h2>
+                            <div className="h-16 w-16 rounded-full bg-red-100 flex items-center justify-center">
+                                <svg className="h-8 w-8 text-red-600"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                </svg>
+                            </div></>
+
+                    )}
+                </div>
+            </div>
+        )}
     </div>
 }
 

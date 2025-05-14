@@ -1,5 +1,5 @@
-import { COUPON_CODES } from "@/sanity/lib/sales/couponCodes";
-import { getActiveSaleByCouponCode } from "@/sanity/lib/sales/getActiveSaleByCouponCode"
+import { COUPON_CODES } from "@/sanity/lib/sale/couponCodes";
+import { getActiveSaleByCouponCode } from "@/sanity/lib/sale/getActiveSaleByCouponCode"
 
 const BlackFridayBanner = async () => {
     const sale = await getActiveSaleByCouponCode(COUPON_CODES.BFRIDAY);

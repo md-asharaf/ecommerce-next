@@ -32,6 +32,11 @@ export const productType = defineType({
             },
         }),
         defineField({
+            name: "imageUrl",
+            title: "Product Image URL",
+            type: "string",
+        }),
+        defineField({
             name: "description",
             title: "Description",
             type: "blockContent",
@@ -43,10 +48,11 @@ export const productType = defineType({
             validation: (Rule) => Rule.required().min(0),
         }),
         defineField({
-            name: "categories",
-            title: "Categories",
-            type: "array",
-            of: [{ type: "reference", to: [{ type: "category" }] }],
+            name: "category",
+            title: "Category",
+            type: "reference",
+            to: [{ type: "category" }],
+            validation: (Rule) => Rule.required(),
         }),
         defineField({
             name: "stock",

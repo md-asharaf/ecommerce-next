@@ -8,8 +8,8 @@ export const orderType = defineType({
     icon: BasketIcon,
     fields: [
         defineField({
-            name: "orderNumber",
-            title: "Order Number",
+            name: "orderId",
+            title: "Order Id",
             type: "string",
             validation: (Rule) => Rule.required(),
         }),
@@ -87,8 +87,8 @@ export const orderType = defineType({
             ],
         }),
         defineField({
-            name: "price",
-            title: "Price",
+            name: "totalAmount",
+            title: "Total Amount",
             type: "number",
             validation: (Rule) => Rule.required().min(0),
         }),
@@ -124,13 +124,61 @@ export const orderType = defineType({
             type: "datetime",
             validation: (Rule) => Rule.required(),
         }),
+        defineField({
+            name: "firstName",
+            title: "First Name",
+            type: "string",
+            validation: (Rule) => Rule.required().min(2),
+        }),
+        defineField({
+            name: "lastName", 
+            title: "Last Name",
+            type: "string",
+            validation: (Rule) => Rule.required().min(2),
+        }),
+        defineField({
+            name: "street",
+            title: "Street Address",
+            type: "string", 
+            validation: (Rule) => Rule.required().min(5),
+        }),
+        defineField({
+            name: "city",
+            title: "City",
+            type: "string",
+            validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+            name: "state",
+            title: "State/Province",
+            type: "string",
+            validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+            name: "country",
+            title: "Country",
+            type: "string",
+            validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+            name: "postalCode",
+            title: "Postal Code",
+            type: "string",
+            validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+            name: "phoneNumber",
+            title: "Phone Number",
+            type: "string",
+            validation: (Rule) => Rule.required(),
+        })
     ],
     preview: {
         select: {
             name: "customerName",
-            amount: "price",
+            amount: "totalPrice",
             currency: "currency",
-            orderId: "orderNumber",
+            orderId: "orderId",
             email: "email",
         },
         prepare(select) {

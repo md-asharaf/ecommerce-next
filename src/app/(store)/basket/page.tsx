@@ -97,25 +97,21 @@ const BasketPage = () => {
                             className="mb-4 p-4 border rounded flex items-center justify-between"
                         >
                             <div className="flex items-center cursor-pointer flex-1 min-w-0" onClick={() => {
-                                router.push(`/products/${product.slug?.current}`)
+                                router.push(`/product/${product.slug?.current}`)
                             }}>
                                 <div className="w-20 h-20 sm:w-24 flex-shrink-0 mr-4 sm:h-24">
-                                    {
-                                        product.image && (
-                                            <Image
-                                                src={imageUrl(product.image).url()}
-                                                alt={product.name || "Product Image"}
-                                                className="object-cover rounded w-full h-full"
-                                                width={96}
-                                                height={96}
-                                            />
-                                        )
-                                    }
+                                    <Image
+                                        src={product.image ? imageUrl(product.image).url() : product.imageUrl!}
+                                        alt={product.name || "Product Image"}
+                                        className="object-cover rounded w-full h-full"
+                                        width={96}
+                                        height={96}
+                                    />
                                 </div>
                                 <div className="min-w-0">
                                     <h2 className="text-lg sm:text-xl font-semibold truncate">{product.name}</h2>
                                     <p className="text-sm sm:text-base">
-                                        Price : ${((product.price ?? 0) * quantity).toFixed(2)}
+                                        Subtotal : ${((product.price ?? 0) * quantity).toFixed(2)}
                                     </p>
                                 </div>
                             </div>

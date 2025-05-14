@@ -1,12 +1,12 @@
 import AddToBasketButton from "@/components/AddToBasketButton";
+import BreadCrumbComponent from "@/components/BreadCrumbComponent";
 import { imageUrl } from "@/lib/imageUrl";
-import { getProductBySlug } from "@/sanity/lib/products/getProductBySlug";
+import { getProductBySlug } from "@/sanity/lib/product/getProductBySlug";
 import { PortableText } from "next-sanity";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { getCategoryByRef } from "@/sanity/lib/category/getCategoryyRef";
 
-export const dynamic = "force-static"
-export const revalidate = 3600;
 const ProductPage = async ({ params }: {
     params: Promise<{
         slug: string
@@ -17,21 +17,16 @@ const ProductPage = async ({ params }: {
     if (!product) {
         return notFound();
     }
+    const category = await getCategoryByRef(product.category?._ref!);
     const isOutOfStock = product.stock === 0;
     return (
         <div className="container mx-auto px-4 py-8">
             <div className="grid gap-8 grid-cols-1 md:grid-cols-2">
                 <div className={`relative aspect-square overflow-hidden rounded-lg shadow-lg ${isOutOfStock && "opacity-50"}`}>
-                    {
-                        product.image && (
-                            <Image
-                                src={imageUrl(product.image).url()}
-                                alt={product.name || "Product Image"}
-                                fill
-                                className="object-contain transition-transform duration-300 hover:sacle-105"
-                            />
-                        )
-                    }
+                    <Image src={product.image ? imageUrl(product.image).url() : product.imageUrl || ''} fill alt={product.name || "Product Image"}
+                        sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
+                        className='object-cover w-full h-full transition-transform duration-300 group-hover:scale-105'
+                    />
                     {
                         isOutOfStock && (
                             <div className="absolute inset-0 flex items-center bg-black justify-center opacity-50">
@@ -43,14 +38,15 @@ const ProductPage = async ({ params }: {
                     }
                 </div>
                 <div className="flex flex-col justify-between">
+                    <BreadCrumbComponent productName={product.name} category={category!} />
                     <div>
-                        <h1 className="text-3xl font-bold mb-4">
+                        <h1 className="text-3xl font-bold mb-2">
                             {product.name}
                         </h1>
-                        <div className="text-3xl font-semibold mb-4">
+                        <div className="text-3xl font-semibold mb-2">
                             ${product.price?.toFixed(2)}
                         </div>
-                        <div className="prose max-w-none mb-6">
+                        <div className="prose max-w-none mb-2">
                             {Array.isArray(product.description) && (
                                 <PortableText value={product.description} />
                             )}

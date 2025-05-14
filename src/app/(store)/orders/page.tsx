@@ -1,6 +1,6 @@
 import { formatCurrency } from "@/lib/formatCurrency"
 import { imageUrl } from "@/lib/imageUrl"
-import { getMyOrders } from "@/sanity/lib/orders/getMyOrders"
+import { getMyOrders } from "@/sanity/lib/order/getMyOrders"
 import { auth } from "@clerk/nextjs/server"
 import Image from "next/image"
 import { redirect } from "next/navigation"
@@ -27,7 +27,7 @@ const OrdersPage = async () => {
                             {
                                 orders.map((order) => (
                                     <div
-                                        key={order.orderNumber}
+                                        key={order.orderId}
                                         className="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden"
                                     >
                                         <div className="p-4 sm:p-6 border-b border-gray-200">
@@ -35,7 +35,7 @@ const OrdersPage = async () => {
                                                 <div className="">
                                                     <p className="text-gray-600 text-sm mb-1 font-bold">Order Number</p>
                                                     <p className="font-mono text-sm text-green-600 break-all">
-                                                        {order.orderNumber}
+                                                        {order.orderId}
                                                     </p>
                                                 </div>
                                                 <div className="sm:text-right">
@@ -52,7 +52,7 @@ const OrdersPage = async () => {
                                                 </div>
                                                 <div className="sm:text-right">
                                                     <p className="text-sm text-gray-600 mb-1">Total Amount</p>
-                                                    <p className="font-bold text-lg">{formatCurrency(order.price ?? 0, order.currency!)}</p>
+                                                    <p className="font-bold text-lg">{formatCurrency(order.totalAmount ?? 0, order.currency!)}</p>
                                                 </div>
                                             </div>
                                             {
@@ -64,7 +64,7 @@ const OrdersPage = async () => {
                                                         </p>
                                                         <p className="text-sm text-gray-600">
                                                             Original SubTotal : {" "}
-                                                            {formatCurrency((order.price ?? 0) + order.amountDiscount, order.currency!)}
+                                                            {formatCurrency((order.totalAmount ?? 0) + order.amountDiscount, order.currency!)}
                                                         </p>
                                                     </div>
                                                 ) : null

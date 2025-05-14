@@ -1,5 +1,5 @@
 import ProductGrid from "@/components/ProductGrid";
-import { searchProductsByName } from "@/sanity/lib/products/searchProductsByName";
+import { searchProductsByName } from "@/sanity/lib/product/searchProductsByName";
 
 const SearchPage = async ({ searchParams }: {
     searchParams: Promise<{
@@ -10,8 +10,8 @@ const SearchPage = async ({ searchParams }: {
     const { query } = await searchParams;
     const products = await searchProductsByName(query);
     
-    return (<div className="flex flex-col items-center justify-start min-h-screen bg-gray-100 p-4">
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-4xl">
+    return (<div className="flex flex-col items-center justify-start min-h-screen p-4">
+        <div className="p-8 rounded-lg w-full">
             <h1 className="text-3xl font-bold mb-6 text-center">
                 {!products.length ? "No products found" : "Search results"} for query : {query}
             </h1>

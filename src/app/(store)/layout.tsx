@@ -22,7 +22,7 @@ export default async function RootLayout({
   return (
     <ClerkProvider dynamic>
       <html lang="en">
-        <body>
+        <body cz-shortcut-listen="true">
           {(await draftMode()).isEnabled && (
             <>
               <DisableDraftMode />

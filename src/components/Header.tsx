@@ -1,13 +1,27 @@
 "use client"
 import { ClerkLoaded, useUser, SignInButton, UserButton, SignedIn } from "@clerk/nextjs"
 import Link from "next/link";
-import Form from "next/form"
+import { useRouter } from "next/navigation";
 import { PackageIcon, TrolleyIcon } from "@sanity/icons";
 import { useBasketStore } from "@/store/store";
+import { useState, useEffect } from "react";
+import { useDebounce } from "use-debounce";
+import Image from "next/image";
+import favicon from "@/app/favicon.ico"
 export const Header = () => {
     const { user } = useUser();
+    const router = useRouter();
     const { items } = useBasketStore();
     const itemCount = items.reduce((total, item) => total + item.quantity, 0);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedValue] = useDebounce(searchQuery, 300);
+
+    useEffect(() => {
+        if (debouncedValue) {
+            router.push(`/search?query=${encodeURIComponent(debouncedValue)}`);
+        }
+    }, [debouncedValue, router]);
+
     const createPassKey = async () => {
         try {
             await user?.createPasskey();
@@ -15,21 +29,24 @@ export const Header = () => {
             console.log(JSON.stringify(error, null, 2))
         }
     }
+
     return <header className="flex flex-wrap justify-between items-center px-4 py-2">
         <div className="flex flex-wrap w-full items-center justify-between">
             <Link href="/"
-                className="text-2xl font-bold text-blue-500 hover:opacity-50 cursor-pointer mx-auto sm:mx-0"
+                className="flex space-x-1 text-2xl font-bold text-blue-500 hover:opacity-50 cursor-pointer mx-auto sm:mx-0"
             >
-                Shopr
+                <Image src={favicon} height={15} width={30} alt="Website Logo"/>
+                <span>Shopper</span>
             </Link>
-            <Form action="/search"
-                className="w-full sm:w-auto sm:flex-1 sm:mx-4 mt-2 sm:mt-0"
-            >
-                <input name="query" type="text"
+            <div className="w-full sm:w-auto sm:flex-1 sm:mx-4 mt-2 sm:mt-0">
+                <input
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    type="text"
                     placeholder="Search for products"
                     className="bg-gray-100 text-gray-800 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 border w-full max-w-4xl"
                 />
-            </Form>
+            </div>
 
             <div className="flex items-center space-x-4 sm:flex-none mt-4 sm:mt-0 flex-1">
                 <Link href="/basket"

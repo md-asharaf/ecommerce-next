@@ -7,11 +7,11 @@ export const getProductBySlug = async (slug: string) => {
         | order(name asc)
         `);
     try {
-        const product = await sanityFetch({
+        const products = await sanityFetch({
             query: PRODUCT_BY_SLUG_QUERY,
             params: { slug },
         });
-        return product ? product.data?.[0] : null;
+        return products.data?.[0] || null;
     } catch (error) {
         console.error("Error fetching product by slug: ", error);
         return null;

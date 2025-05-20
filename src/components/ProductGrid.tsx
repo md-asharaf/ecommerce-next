@@ -1,9 +1,10 @@
 "use client"
+import { ElasticProduct } from '@/lib/elasticSearch';
 import { Product } from '../../sanity.types'
 import ProductThumbnail from './ProductThumbnail';
 import { AnimatePresence, motion } from "framer-motion"
 interface ProductGridProps {
-    products: Product[];
+    products: Product[] | ElasticProduct[];
 }
 const ProductGrid = ({ products }: ProductGridProps) => {
     return (

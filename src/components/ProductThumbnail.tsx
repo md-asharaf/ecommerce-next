@@ -3,18 +3,19 @@ import { Product } from '../../sanity.types'
 import Link from 'next/link';
 import Image from 'next/image';
 import { imageUrl } from '@/lib/imageUrl';
+import { ElasticProduct } from '@/lib/elasticSearch';
 interface ProductThumbnailProps {
-    product: Product;
+    product: Product | ElasticProduct;
 }
 const ProductThumbnail = ({ product }: ProductThumbnailProps) => {
     const isOutOfStock = product?.stock === 0;
     return (
         <Link
-            href={`/product/${product?.slug?.current}`}
+            href={`/product/${typeof product?.slug == 'string' ? product?.slug : product?.slug?.current}`}
             className={`group flex flex-col bg-white rounded-lg border shadow-sm border-gray-200 transition-all duration-200 overflow-hidden hover:shadow-md ${isOutOfStock && 'opacity-50'} w-full aspect-[3/4]`}
         >
             <div className='relative w-full flex-1 overflow-hidden'>
-                <Image src={ product.image ? imageUrl(product.image).url() : product.imageUrl || ''} fill alt={product.name || "Product Image"}
+                <Image src={product.image ? imageUrl(product.image).url() : product.imageUrl || ''} fill alt={product.name || "Product Image"}
                     sizes='(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw'
                     className='object-cover w-full h-full transition-transform duration-300 group-hover:scale-105'
                 />

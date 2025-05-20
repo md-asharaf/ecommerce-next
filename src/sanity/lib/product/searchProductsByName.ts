@@ -1,21 +1,19 @@
-import { defineQuery } from "next-sanity";
-import { sanityFetch } from "../live";
+import { ElasticProduct } from "@/lib/elasticSearch";
 
 export const searchProductsByName = async (searchParam: string) => {
-    const PRODUCTS_BY_NAME_QUERY = defineQuery(`
-        *[_type=="product"
-            && name match $searchParam
-        ] | order(name asc)
-        `);
-
     try {
-        const products = await sanityFetch({
-            query: PRODUCTS_BY_NAME_QUERY,
-            params: {
-                searchParam,
-            },
-        });
-        return products.data || [];
+        const products = await fetch(
+            `http://localhost:3000/api/product/search?q=${searchParam}`,
+            {
+                method: "GET",
+            }
+        );
+        const response = await products.json();
+        if (!response) {
+            throw new Error("No results found");
+        }
+        console.log("Search results:", response);
+        return response.results as ElasticProduct[];
     } catch (error) {
         console.error("Error searching products by name:", error);
         return [];

@@ -19,7 +19,7 @@ const CategoryPage = async ({ params }: {
     }
     return (
         <div className="flex flex-col justify-start min-h-screen p-4">
-            <div className="rounded-lg sm:p-8 w-full">
+            <div className="rounded-lg sm:p-8 w-full space-y-2">
                 <BreadCrumbComponent category={category} />
                 <ProductsView categories={categories} products={products} />
             </div>

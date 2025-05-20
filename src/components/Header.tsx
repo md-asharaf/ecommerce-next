@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PackageIcon, TrolleyIcon } from "@sanity/icons";
 import { useBasketStore } from "@/store/store";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useDebounce } from "use-debounce";
 import Image from "next/image";
 import favicon from "@/app/favicon.ico"
@@ -14,11 +14,12 @@ export const Header = () => {
     const { items } = useBasketStore();
     const itemCount = items.reduce((total, item) => total + item.quantity, 0);
     const [searchQuery, setSearchQuery] = useState("");
-    const [debouncedValue] = useDebounce(searchQuery, 300);
-
+    const [debouncedValue] = useDebounce(searchQuery, 500);
     useEffect(() => {
         if (debouncedValue) {
             router.push(`/search?query=${encodeURIComponent(debouncedValue)}`);
+        } else {
+            router.push(`/`);
         }
     }, [debouncedValue, router]);
 
@@ -35,7 +36,7 @@ export const Header = () => {
             <Link href="/"
                 className="flex space-x-1 text-2xl font-bold text-blue-500 hover:opacity-50 cursor-pointer mx-auto sm:mx-0"
             >
-                <Image src={favicon} height={15} width={30} alt="Website Logo"/>
+                <Image src={favicon} height={15} width={30} alt="Website Logo" />
                 <span>Shopper</span>
             </Link>
             <div className="w-full sm:w-auto sm:flex-1 sm:mx-4 mt-2 sm:mt-0">
@@ -47,7 +48,6 @@ export const Header = () => {
                     className="bg-gray-100 text-gray-800 px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 border w-full max-w-4xl"
                 />
             </div>
-
             <div className="flex items-center space-x-4 sm:flex-none mt-4 sm:mt-0 flex-1">
                 <Link href="/basket"
 
@@ -80,9 +80,6 @@ export const Header = () => {
                         ) : (
                             <SignInButton
                                 mode="modal"
-                            // signInUrl="/sign-in"
-                            // afterSignInUrl="/"
-                            // afterSignUpUrl="/"
                             />
                         )
                     }
@@ -100,8 +97,6 @@ export const Header = () => {
 
                 </ClerkLoaded>
             </div>
-
-
         </div>
     </header>
 

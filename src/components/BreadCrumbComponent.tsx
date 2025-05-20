@@ -16,7 +16,7 @@ const BreadCrumbComponent = ({ category, productName = "" }: { category?: Catego
                 {category && (
                     <>
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="/" className="">HOME</BreadcrumbLink>
+                            <BreadcrumbLink href="/">HOME</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem >

@@ -17,6 +17,7 @@ const nextConfig: NextConfig = {
             },
         ],
     },
+    allowedDevOrigins: ["*.ngrok-free.app"],
     eslint: {
         ignoreDuringBuilds: true,
     },

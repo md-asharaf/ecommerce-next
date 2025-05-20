@@ -1,9 +1,7 @@
 import { Client } from "@elastic/elasticsearch";
-const username = process.env.ELASTICSEARCH_USERNAME;
-const password = process.env.ELASTICSEARCH_PASSWORD;
 const node = process.env.ELASTICSEARCH_URL;
-if (!username || !password || !node) {
-    throw new Error("Elasticsearch username, password, and URL must be set");
+if (!node) {
+    throw new Error("Elasticsearch URL must be set");
 }
 export const client = new Client({
     node,

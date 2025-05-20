@@ -12,7 +12,6 @@ export const searchProductsByName = async (searchParam: string) => {
         if (!response) {
             throw new Error("No results found");
         }
-        console.log("Search results:", response);
         return response.results as ElasticProduct[];
     } catch (error) {
         console.error("Error searching products by name:", error);

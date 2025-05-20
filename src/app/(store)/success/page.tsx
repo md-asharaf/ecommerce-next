@@ -7,17 +7,14 @@ import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 
 const SuccessPage = () => {
-  console.log("Success page");
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
   const paymentId = searchParams.get("paymentId");
   const { clearBasket } = useBasketStore((state) => state);
   useEffect(() => {
-    console.log("Success page useEffect");
     if (orderId) {
       clearBasket();
     }
-    console.log("Success page after useEffect");
   }, [orderId, clearBasket])
   if (!orderId) {
     return (

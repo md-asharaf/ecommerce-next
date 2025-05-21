@@ -1,4 +1,4 @@
-import AddToBasketButton from "@/components/AddToBasketButton";
+import AddToCartButton from "@/components/AddToCartButton";
 import BreadCrumbComponent from "@/components/BreadCrumbComponent";
 import { imageUrl } from "@/lib/imageUrl";
 import { getProductBySlug } from "@/sanity/lib/product/getProductBySlug";
@@ -18,6 +18,12 @@ const ProductPage = async ({ params }: {
         return notFound();
     }
     const category = await getCategoryByRef(product.category?._ref!);
+    const items = [
+        {
+            title: category?.title || "",
+            href: `/category/${category?.slug?.current}`
+        }
+    ]
     const isOutOfStock = product.stock === 0;
     return (
         <div className="container mx-auto px-4 py-8">
@@ -38,7 +44,7 @@ const ProductPage = async ({ params }: {
                     }
                 </div>
                 <div className="flex flex-col justify-between space-y-2">
-                    <BreadCrumbComponent productName={product.name} category={category!} />
+                    <BreadCrumbComponent items={items} />
                     <div>
                         <h1 className="text-3xl font-bold mb-2">
                             {product.name}
@@ -47,13 +53,13 @@ const ProductPage = async ({ params }: {
                             ${product.price?.toFixed(2)}
                         </div>
                         <div className="prose max-w-none mb-2">
-                            {Array.isArray(product.description) && (
+                            {Array.isArray(product.description) ? (
                                 <PortableText value={product.description} />
-                            )}
+                            ) : product.description}
                         </div>
                     </div>
                     <div className="mt-6">
-                        <AddToBasketButton product={product} disabled={isOutOfStock} />
+                        <AddToCartButton product={product} disabled={isOutOfStock} />
                     </div>
                 </div>
             </div>

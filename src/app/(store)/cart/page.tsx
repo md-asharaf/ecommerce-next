@@ -1,19 +1,19 @@
 "use client"
-import AddToBasketButton from "@/components/AddToBasketButton"
+import AddToCartButton from "@/components/AddToCartButton"
 import { imageUrl } from "@/lib/imageUrl"
 import { SignInButton, useAuth, useUser } from "@clerk/nextjs"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import { useBasketStore } from "@/store/store"
+import { useCartStore } from "@/store/cart"
 import { loadScript } from "@/lib/loadScript"
 import { RazorpayOptions } from "@/types/razorpay"
 import { createRazorpayOrder, Metadata } from "@/actions/createRazorpayOrder"
 import { RazorpaySuccessResponse, verifyRazorpaySignature } from "@/actions/verifyRazorpaySignature"
-const BasketPage = () => {
-    const groupedItems = useBasketStore((state) => state.items)
-    const totalPrice = useBasketStore((state) => state.getTotalPrice())
-    const totalItems = useBasketStore((state) => state.getTotalItems())
+const CartPage = () => {
+    const groupedItems = useCartStore((state) => state.items)
+    const totalPrice = useCartStore((state) => state.getTotalPrice())
+    const totalItems = useCartStore((state) => state.getTotalItems())
     const { isSignedIn } = useAuth();
     const { user } = useUser();
     const router = useRouter();
@@ -23,13 +23,11 @@ const BasketPage = () => {
         if (!isSignedIn) return;
         setIsLoading(true)
         try {
-            const metadata: Metadata = {
+            const metadata: Partial<Metadata> = {
                 clerkUserId: user!.id,
-                customerEmail: user?.emailAddresses?.[0].emailAddress || "Unknown",
-                customerName: user?.fullName || "Unknown",
-                receiptNumber: crypto.randomUUID().slice(0, 20)
+                email: user?.emailAddresses?.[0].emailAddress || "Unknown",
             }
-            const order = await createRazorpayOrder(groupedItems, metadata);
+            const order = await createRazorpayOrder(groupedItems, metadata as Metadata);
             if (!order) {
                 throw new Error("Order creation failed");
             }
@@ -44,8 +42,8 @@ const BasketPage = () => {
                 order_id: order.id,
                 currency: order.currency,
                 prefill: {
-                    name: metadata.customerName,
-                    email: metadata.customerEmail,
+                    name: metadata.firstName+" " + metadata.lastName,
+                    email: metadata.email, 
                 },
                 theme: {
                     color: "#121212"
@@ -81,12 +79,13 @@ const BasketPage = () => {
     }
     if (groupedItems.length == 0) {
         return <div className="container mx-auto p-4 flex flex-col items-center justify-center min-h-[50vh]">
-            <h1 className="text-2xl font-bold mb-6 text-gray-800">Your Basket</h1>
-            <p className="text-gray-600 text-lg">Your Basket is Empty</p>
+            <h1 className="text-2xl font-bold mb-6 text-gray-800">Your Cart</h1>
+            <p className="text-gray-600 text-lg">Your Cart is Empty</p>
         </div>
     }
     return <div className="container mx-auto p-4 max-w-6xl">
         <h1 className="text-2xl font-bold mb-4">
+            Your Cart
         </h1>
         <div className="flex flex-col lg:flex-row gap-8">
             <div className="flex-grow">
@@ -116,7 +115,7 @@ const BasketPage = () => {
                                 </div>
                             </div>
                             <div className="flex items-center ml-4 flex-shrink-0">
-                                <AddToBasketButton product={product} />
+                                <AddToCartButton product={product} />
                             </div>
                         </div>
                     )
@@ -215,4 +214,4 @@ const BasketPage = () => {
     </div>
 }
 
-export default BasketPage
+export default CartPage

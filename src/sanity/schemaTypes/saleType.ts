@@ -1,180 +1,179 @@
-import { TagIcon } from "@sanity/icons";
-import { defineField, defineType } from "sanity";
+import { TagIcon } from '@sanity/icons';
+import { defineField, defineType } from 'sanity';
 
 export const salesType = defineType({
-    name: "sale",
-    title: "Sales",
-    type: "document",
-    icon: TagIcon,
-    fields: [
-        defineField({
-            name: "title",
-            title: "Sale Title",
-            type: "string",
-        }),
-        defineField({
-            name: "description",
-            title: "Sale Description",
-            type: "text",
-        }),
-        defineField({
-            name: "discountAmount",
-            title: "Discount Amount",
-            type: "number",
-            description: "Amount off in percentage or fixed value",
-            validation: (Rule) => Rule.required().min(0),
-        }),
-        defineField({
-            name: "couponCode",
-            title: "Coupon Code",
-            type: "string",
-        }),
-        defineField({
-            name: "validFrom",
-            title: "Valid From",
-            type: "datetime",
-        }),
-        defineField({
-            name: "validUntil",
-            title: "Valid Until",
-            type: "datetime",
-        }),
-        defineField({
-            name: "isActive",
-            title: "Is Active",
-            type: "boolean",
-            description: "Toggle to activate/deactivate the sale",
-            initialValue: true,
-        }),
-    ],
-    preview:{
-        select: {
-            title: "title",
-            discountAmount: "discountAmount",
-            isActive: "isActive",
-            couponCode: "couponCode",
-        },
-        prepare({ title, discountAmount,isActive,couponCode }) {
-            const status = isActive ? "Active" : "Inactive";
-            return {
-                title: `${title} - ${isActive ? "Active" : "Inactive"}`,
-                subtitle: `${discountAmount}% off - Code: ${couponCode} - ${status}`,
-                media: TagIcon,
-            }
-        }
-    }
+  name: 'sale',
+  title: 'Sales',
+  type: 'document',
+  icon: TagIcon,
+  fields: [
+    defineField({
+      name: 'title',
+      title: 'Sale Title',
+      type: 'string',
+    }),
+    defineField({
+      name: 'description',
+      title: 'Sale Description',
+      type: 'text',
+    }),
+    defineField({
+      name: 'discountAmount',
+      title: 'Discount Amount',
+      type: 'number',
+      description: 'Amount off in percentage or fixed value',
+      validation: (Rule) => Rule.required().min(0),
+    }),
+    defineField({
+      name: 'couponCode',
+      title: 'Coupon Code',
+      type: 'string',
+    }),
+    defineField({
+      name: 'validFrom',
+      title: 'Valid From',
+      type: 'datetime',
+    }),
+    defineField({
+      name: 'validUntil',
+      title: 'Valid Until',
+      type: 'datetime',
+    }),
+    defineField({
+      name: 'isActive',
+      title: 'Is Active',
+      type: 'boolean',
+      description: 'Toggle to activate/deactivate the sale',
+      initialValue: true,
+    }),
+  ],
+  preview: {
+    select: {
+      title: 'title',
+      discountAmount: 'discountAmount',
+      isActive: 'isActive',
+      couponCode: 'couponCode',
+    },
+    prepare({ title, discountAmount, isActive, couponCode }) {
+      const status = isActive ? 'Active' : 'Inactive';
+      return {
+        title: `${title} - ${isActive ? 'Active' : 'Inactive'}`,
+        subtitle: `${discountAmount}% off - Code: ${couponCode} - ${status}`,
+        media: TagIcon,
+      };
+    },
+  },
 });
 
-
 [
-    {
-      "_type": "sale",
-      "_id": "sale-001",
-      "title": "Summer Clearance Sale",
-      "description": "Enjoy 25% off on all summer clothing and accessories. Limited time offer!",
-      "discountAmount": 25,
-      "couponCode": "SUMMER25",
-      "validFrom": "2025-06-01T00:00:00Z",
-      "validUntil": "2025-06-30T23:59:59Z",
-      "isActive": true
-    },
-    {
-      "_type": "sale",
-      "_id": "sale-002",
-      "title": "Winter Warm-Up Deal",
-      "description": "Get $10 off on orders over $50. Perfect for winter jackets and boots!",
-      "discountAmount": 10,
-      "couponCode": "WINTER10",
-      "validFrom": "2025-01-01T00:00:00Z",
-      "validUntil": "2025-02-28T23:59:59Z",
-      "isActive": false
-    },
-    {
-      "_type": "sale",
-      "_id": "sale-003",
-      "title": "Back-to-School Sale",
-      "description": "20% off on backpacks, stationery, and school uniforms. Stock up now!",
-      "discountAmount": 20,
-      "couponCode": "SCHOOL20",
-      "validFrom": "2025-08-01T00:00:00Z",
-      "validUntil": "2025-08-31T23:59:59Z",
-      "isActive": true
-    },
-    {
-      "_type": "sale",
-      "_id": "sale-004",
-      "title": "Black Friday Extravaganza",
-      "description": "Massive 30% off sitewide! Don’t miss the biggest sale of the year.",
-      "discountAmount": 30,
-      "couponCode": "BF30",
-      "validFrom": "2025-11-28T00:00:00Z",
-      "validUntil": "2025-11-30T23:59:59Z",
-      "isActive": true
-    },
-    {
-      "_type": "sale",
-      "_id": "sale-005",
-      "title": "Spring Refresh Sale",
-      "description": "15% off on home decor and spring fashion. Refresh your wardrobe and home!",
-      "discountAmount": 15,
-      "couponCode": "SPRING15",
-      "validFrom": "2025-03-01T00:00:00Z",
-      "validUntil": "2025-03-31T23:59:59Z",
-      "isActive": false
-    },
-    {
-      "_type": "sale",
-      "_id": "sale-006",
-      "title": "Flash Sale Weekend",
-      "description": "Get $5 off on any purchase this weekend only. Hurry, offer ends soon!",
-      "discountAmount": 5,
-      "couponCode": "FLASH5",
-      "validFrom": "2025-05-16T00:00:00Z",
-      "validUntil": "2025-05-18T23:59:59Z",
-      "isActive": true
-    },
-    {
-      "_type": "sale",
-      "_id": "sale-007",
-      "title": "Holiday Gift Sale",
-      "description": "25% off on gift items and holiday decorations. Spread the festive cheer!",
-      "discountAmount": 25,
-      "couponCode": "GIFT25",
-      "validFrom": "2025-12-01T00:00:00Z",
-      "validUntil": "2025-12-24T23:59:59Z",
-      "isActive": true
-    },
-    {
-      "_type": "sale",
-      "_id": "sale-008",
-      "title": "New Year Blowout",
-      "description": "Start the year with 20% off on electronics and gadgets. Limited stock!",
-      "discountAmount": 20,
-      "couponCode": "NY2025",
-      "validFrom": "2025-01-01T00:00:00Z",
-      "validUntil": "2025-01-15T23:59:59Z",
-      "isActive": false
-    },
-    {
-      "_type": "sale",
-      "_id": "sale-009",
-      "title": "Mid-Season Sale",
-      "description": "Up to 40% off on selected fashion items. Update your wardrobe today!",
-      "discountAmount": 40,
-      "couponCode": "MID40",
-      "validFrom": "2025-04-15T00:00:00Z",
-      "validUntil": "2025-04-30T23:59:59Z",
-      "isActive": false
-    },
-    {
-      "_type": "sale",
-      "_id": "sale-010",
-      "title": "Loyalty Discount",
-      "description": "Exclusive $15 off for returning customers on orders over $100.",
-      "discountAmount": 15,
-      "couponCode": "LOYAL15",
-      "validFrom": "2025-05-01T00:00:00Z",
-      "validUntil": "2025-05-31T23:59:59Z",
-      "isActive": true
-    }
-  ]
+  {
+    _type: 'sale',
+    _id: 'sale-001',
+    title: 'Summer Clearance Sale',
+    description: 'Enjoy 25% off on all summer clothing and accessories. Limited time offer!',
+    discountAmount: 25,
+    couponCode: 'SUMMER25',
+    validFrom: '2025-06-01T00:00:00Z',
+    validUntil: '2025-06-30T23:59:59Z',
+    isActive: true,
+  },
+  {
+    _type: 'sale',
+    _id: 'sale-002',
+    title: 'Winter Warm-Up Deal',
+    description: 'Get $10 off on orders over $50. Perfect for winter jackets and boots!',
+    discountAmount: 10,
+    couponCode: 'WINTER10',
+    validFrom: '2025-01-01T00:00:00Z',
+    validUntil: '2025-02-28T23:59:59Z',
+    isActive: false,
+  },
+  {
+    _type: 'sale',
+    _id: 'sale-003',
+    title: 'Back-to-School Sale',
+    description: '20% off on backpacks, stationery, and school uniforms. Stock up now!',
+    discountAmount: 20,
+    couponCode: 'SCHOOL20',
+    validFrom: '2025-08-01T00:00:00Z',
+    validUntil: '2025-08-31T23:59:59Z',
+    isActive: true,
+  },
+  {
+    _type: 'sale',
+    _id: 'sale-004',
+    title: 'Black Friday Extravaganza',
+    description: 'Massive 30% off sitewide! Don’t miss the biggest sale of the year.',
+    discountAmount: 30,
+    couponCode: 'BF30',
+    validFrom: '2025-11-28T00:00:00Z',
+    validUntil: '2025-11-30T23:59:59Z',
+    isActive: true,
+  },
+  {
+    _type: 'sale',
+    _id: 'sale-005',
+    title: 'Spring Refresh Sale',
+    description: '15% off on home decor and spring fashion. Refresh your wardrobe and home!',
+    discountAmount: 15,
+    couponCode: 'SPRING15',
+    validFrom: '2025-03-01T00:00:00Z',
+    validUntil: '2025-03-31T23:59:59Z',
+    isActive: false,
+  },
+  {
+    _type: 'sale',
+    _id: 'sale-006',
+    title: 'Flash Sale Weekend',
+    description: 'Get $5 off on any purchase this weekend only. Hurry, offer ends soon!',
+    discountAmount: 5,
+    couponCode: 'FLASH5',
+    validFrom: '2025-05-16T00:00:00Z',
+    validUntil: '2025-05-18T23:59:59Z',
+    isActive: true,
+  },
+  {
+    _type: 'sale',
+    _id: 'sale-007',
+    title: 'Holiday Gift Sale',
+    description: '25% off on gift items and holiday decorations. Spread the festive cheer!',
+    discountAmount: 25,
+    couponCode: 'GIFT25',
+    validFrom: '2025-12-01T00:00:00Z',
+    validUntil: '2025-12-24T23:59:59Z',
+    isActive: true,
+  },
+  {
+    _type: 'sale',
+    _id: 'sale-008',
+    title: 'New Year Blowout',
+    description: 'Start the year with 20% off on electronics and gadgets. Limited stock!',
+    discountAmount: 20,
+    couponCode: 'NY2025',
+    validFrom: '2025-01-01T00:00:00Z',
+    validUntil: '2025-01-15T23:59:59Z',
+    isActive: false,
+  },
+  {
+    _type: 'sale',
+    _id: 'sale-009',
+    title: 'Mid-Season Sale',
+    description: 'Up to 40% off on selected fashion items. Update your wardrobe today!',
+    discountAmount: 40,
+    couponCode: 'MID40',
+    validFrom: '2025-04-15T00:00:00Z',
+    validUntil: '2025-04-30T23:59:59Z',
+    isActive: false,
+  },
+  {
+    _type: 'sale',
+    _id: 'sale-010',
+    title: 'Loyalty Discount',
+    description: 'Exclusive $15 off for returning customers on orders over $100.',
+    discountAmount: 15,
+    couponCode: 'LOYAL15',
+    validFrom: '2025-05-01T00:00:00Z',
+    validUntil: '2025-05-31T23:59:59Z',
+    isActive: true,
+  },
+];

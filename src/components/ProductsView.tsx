@@ -3,9 +3,10 @@ import { Category, Product } from '../../sanity.types';
 import ProductGrid from './ProductGrid';
 import CategorySelector from './CategorySelector';
 import SortingFilter from './SortingFilter';
+import { ElasticProduct } from '@/lib/elasticSearch';
 
 interface ProductsViewProps {
-    products: Product[];
+    products?: Product[] | ElasticProduct[];
     categories: Category[];
 }
 const ProductsView = ({ products, categories }: ProductsViewProps) => {

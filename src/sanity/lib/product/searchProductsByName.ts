@@ -3,7 +3,7 @@ import { ElasticProduct } from "@/lib/elasticSearch";
 export const searchProductsByName = async (searchParam: string) => {
     try {
         const products = await fetch(
-            `http://localhost:3000/api/product/search?q=${searchParam}`,
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/product/search?q=${searchParam}`,
             {
                 method: "GET",
             }

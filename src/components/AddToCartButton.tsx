@@ -1,13 +1,13 @@
 "use client"
 import { useEffect, useState } from 'react'
 import { Product } from '../../sanity.types'
-import { useBasketStore } from '@/store/store'
-interface AddToBasketButtonProps {
+import { useCartStore } from '@/store/cart'
+interface AddToCartButtonProps {
     product: Product,
     disabled?: boolean
 }
-const AddToBasketButton = ({ product, disabled = false }: AddToBasketButtonProps) => {
-    const { addItem, getItemCount, removeItem } = useBasketStore()
+const AddToCartButton = ({ product, disabled = false }: AddToCartButtonProps) => {
+    const { addItem, getItemCount, removeItem } = useCartStore()
     const itemCount = getItemCount(product._id)
     const [isClient, setIsClient] = useState(false)
     useEffect(() => { setIsClient(true) }, [])
@@ -39,4 +39,4 @@ const AddToBasketButton = ({ product, disabled = false }: AddToBasketButtonProps
     )
 }
 
-export default AddToBasketButton
+export default AddToCartButton

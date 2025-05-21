@@ -4,33 +4,29 @@ import {
     BreadcrumbItem,
     BreadcrumbLink,
     BreadcrumbList,
-    BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { Category } from "../../sanity.types";
-
-const BreadCrumbComponent = ({ category, productName = "" }: { category?: Category; productName?: string }) => {
+interface BreadCrumbComponentProps {
+    items: {
+        title: string;
+        href: string;
+    }[]
+}
+const BreadCrumbComponent = ({ items }: BreadCrumbComponentProps) => {
     return (
         <Breadcrumb>
             <BreadcrumbList>
-                {category && (
-                    <>
-                        <BreadcrumbItem>
-                            <BreadcrumbLink href="/">HOME</BreadcrumbLink>
-                        </BreadcrumbItem>
+                <BreadcrumbItem>
+                    <BreadcrumbLink href="/">HOME</BreadcrumbLink>
+                </BreadcrumbItem>
+                {items?.map(({ title, href }, index) => (
+                    <div key={index} className="flex items-center">
                         <BreadcrumbSeparator />
                         <BreadcrumbItem >
-                            < BreadcrumbLink href={`/category/${category.slug?.current}`} >{category.title?.toUpperCase()}</BreadcrumbLink>
+                            < BreadcrumbLink href={href} >{title.toUpperCase()}</BreadcrumbLink>
                         </BreadcrumbItem>
-                    </>
-                )}
-                {productName && (<>
-                    <BreadcrumbSeparator />
-                    <BreadcrumbItem>
-                        <BreadcrumbPage>{productName?.toUpperCase()}</BreadcrumbPage>
-                    </BreadcrumbItem>
-                </>
-                )}
+                    </div>
+                ))}
             </BreadcrumbList>
         </Breadcrumb >
 

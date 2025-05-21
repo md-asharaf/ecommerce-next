@@ -3,7 +3,6 @@ import { razorpay } from "@/lib/razorpay";
 import { backendClient } from "@/sanity/lib/backendClient";
 import crypto from "crypto";
 import { Metadata } from "./createRazorpayOrder";
-import { BasketItem } from "@/store/store";
 export type RazorpaySuccessResponse = {
     razorpay_order_id: string;
     razorpay_payment_id: string;
@@ -32,33 +31,47 @@ const createSanityOrder = async (eventData: RazorpaySuccessResponse) => {
     try {
         const { razorpay_payment_id, razorpay_signature, razorpay_order_id } =
             eventData;
-        const { notes, receipt, amount, currency } =
+        const { notes, amount, currency, line_items } =
             await razorpay.orders.fetch(razorpay_order_id);
-        const { customerName, customerEmail, clerkUserId } = notes as Metadata;
-        const lineItems = JSON.parse(
-            notes?.line_items as string
-        ) as BasketItem[];
-        const products = lineItems.map((item) => ({
+        const products = line_items?.map((item) => ({
             _key: crypto.randomUUID(),
             product: {
                 _type: "reference",
-                _ref: item.product._id as string,
+                _ref: item.sku as string,
             },
             quantity: item.quantity,
         }));
+        const {
+            city,
+            clerkUserId,
+            country,
+            email,
+            firstName,
+            lastName,
+            phone,
+            state,
+            street,
+            zip,
+        } = notes as Metadata;
         await backendClient.create({
             _type: "order",
-            orderNumber: razorpay_order_id,
-            razorpayReceiptId: receipt,
+            orderId: razorpay_order_id,
             razorpayPaymentId: razorpay_payment_id,
             razorpaySignature: razorpay_signature,
             status: "paid",
-            customerName,
-            email: customerEmail,
+            email,
+            city,
+            country,
+            firstName,
+            lastName,
+            phone,
+            state,
+            street,
+            zip,
             clerkUserId,
             currency,
             amountDiscount: 0,
-            price: Number(amount) / 100,
+            totalAmount: Number(amount) / 100,
             products,
             orderDate: new Date().toISOString(),
         });

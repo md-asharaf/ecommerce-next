@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useBasketStore } from "@/store/store";
+import { useCartStore } from "@/store/cart";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
@@ -10,12 +10,12 @@ const SuccessPage = () => {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
   const paymentId = searchParams.get("paymentId");
-  const { clearBasket } = useBasketStore((state) => state);
+  const { clearCart } = useCartStore();
   useEffect(() => {
     if (orderId) {
-      clearBasket();
+      clearCart();
     }
-  }, [orderId, clearBasket])
+  }, [orderId, clearCart])
   if (!orderId) {
     return (
       <div className="flex flex-col items-center justify-center min-h-full bg-gray-50">

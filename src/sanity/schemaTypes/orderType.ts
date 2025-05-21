@@ -1,11 +1,11 @@
-import { BasketIcon } from "@sanity/icons";
+import { CartIcon } from "@sanity/icons";
 import { defineArrayMember, defineField, defineType } from "sanity";
 
 export const orderType = defineType({
     name: "order",
     title: "Orders",
     type: "document",
-    icon: BasketIcon,
+    icon: CartIcon,
     fields: [
         defineField({
             name: "orderId",
@@ -20,21 +20,9 @@ export const orderType = defineType({
             validation: (Rule) => Rule.required(),
         }),
         defineField({
-            name: "razorpayReceiptId",
-            title: "Razorpay Receipt ID",
-            type: "string",
-            validation: (Rule) => Rule.required(),
-        }),
-        defineField({
             name: "clerkUserId",
             title: "Clerk User ID",
             type: "string",
-        }),
-        defineField({
-            name: "customerName",
-            title: "Customer Name",
-            type: "string",
-            validation: (Rule) => Rule.required().min(0),
         }),
         defineField({
             name: "email",
@@ -131,7 +119,7 @@ export const orderType = defineType({
             validation: (Rule) => Rule.required().min(2),
         }),
         defineField({
-            name: "lastName", 
+            name: "lastName",
             title: "Last Name",
             type: "string",
             validation: (Rule) => Rule.required().min(2),
@@ -139,7 +127,7 @@ export const orderType = defineType({
         defineField({
             name: "street",
             title: "Street Address",
-            type: "string", 
+            type: "string",
             validation: (Rule) => Rule.required().min(5),
         }),
         defineField({
@@ -161,22 +149,23 @@ export const orderType = defineType({
             validation: (Rule) => Rule.required(),
         }),
         defineField({
-            name: "postalCode",
+            name: "zip",
             title: "Postal Code",
             type: "string",
             validation: (Rule) => Rule.required(),
         }),
         defineField({
-            name: "phoneNumber",
+            name: "phone",
             title: "Phone Number",
             type: "string",
             validation: (Rule) => Rule.required(),
-        })
+        }),
     ],
     preview: {
         select: {
-            name: "customerName",
-            amount: "totalPrice",
+            firstName: "firstName",
+            lastName: "lastName",
+            amount: "totalAmount",
             currency: "currency",
             orderId: "orderId",
             email: "email",
@@ -184,9 +173,9 @@ export const orderType = defineType({
         prepare(select) {
             const orderIdSnippet = `${select.orderId.slice(0, 5)}...${select.orderId.slice(-5)}`;
             return {
-                title: `${select.name} (${orderIdSnippet})`,
+                title: `${select.firstName} ${select.lastName} (${orderIdSnippet})`,
                 subtitle: `${select.amount} ${select.currency}, ${select.email}`,
-                media: BasketIcon,
+                media: CartIcon,
             };
         },
     },

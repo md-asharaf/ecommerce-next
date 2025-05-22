@@ -1,12 +1,20 @@
 import ProductsView from "@/components/ProductsView";
-import { getAllCategories } from "@/sanity/lib/category/getAllCategories";
-export default async function Home() {
-  const categories = await getAllCategories();
+import { getAllProducts } from "@/sanity/lib/product/getAllProducts";
+
+const Home = async () => {
+  const fetchData = async (page?: number) => {
+    "use server";
+    return await getAllProducts(page);
+  };
   return (
-    <div>
-      <div className="min-h-screen bg-gray-100 p-4">
-        <ProductsView categories={categories} />
+    <div className="flex flex-col justify-start min-h-screen p-4">
+      <div className="rounded-lg sm:p-8 w-full space-y-2">
+        <ProductsView
+          fetchData={fetchData}
+        />
       </div>
     </div>
   );
-}
+};
+
+export default Home;

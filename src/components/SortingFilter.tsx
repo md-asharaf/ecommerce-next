@@ -18,7 +18,6 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 
 const filters = [
     { id: 1, title: "Best Selling" },
@@ -31,7 +30,6 @@ const filters = [
 const SortingFilter = () => {
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState("");
-    const router = useRouter();
 
     return (
         <Popover open={open} onOpenChange={setOpen}>

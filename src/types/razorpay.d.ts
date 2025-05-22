@@ -21,7 +21,25 @@ export interface RazorpayOptions {
         color?: string;
     };
 }
-
+export type LineItem = {
+    type: string;
+    sku: string;
+    variant_id: string;
+    price: string;
+    offer_price: string;
+    tax_amount: number;
+    quantity: number;
+    name: string;
+    description: string;
+    weight: string;
+    dimensions: {
+        height: string;
+        width: string;
+        length: string;
+    };
+    image_url: string;
+    product_url: string;
+};
 interface RazorpayInstance {
     open: () => void;
 }

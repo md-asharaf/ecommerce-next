@@ -1,35 +1,46 @@
 "use client"
-import { ElasticProduct } from '@/lib/elasticSearch';
 import { Product } from '../../sanity.types'
 import ProductThumbnail from './ProductThumbnail';
 import { AnimatePresence, motion } from "framer-motion"
 import { useIntersection } from "@mantine/hooks"
 import { useEffect, useRef, useState } from 'react';
-import { useProductStore } from '@/store/product';
-import { getAllProducts } from '@/sanity/lib/product/getAllProducts';
 import Loading from '@/app/(store)/loading';
 interface ProductGridProps {
-    products?: Product[] | ElasticProduct[];
+    fetchData: (page?: number) => Promise<{
+        products: Product[];
+        hasNextPage: boolean;
+    }>;
 }
-
-const ProductGrid = ({ products: categoryProducts }: ProductGridProps) => {
+const ProductGrid = ({ fetchData }: ProductGridProps) => {
+    const [products, setProducts] = useState<Product[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const { addProducts, products, page, hasNextPage, setHasNextPage, setPage } = useProductStore()
+    const [page, setPage] = useState(1);
+    const [hasNextPage, setHasNextPage] = useState(true);
+
+    useEffect(() => {
+        const loadInitialData = async () => {
+            setIsLoading(true);
+            const { products, hasNextPage } = await fetchData(page);
+            setProducts(products);
+            setHasNextPage(hasNextPage);
+            setPage(page + 1);
+            setIsLoading(false);
+        };
+        loadInitialData();
+    }, [fetchData]);
+    const addProducts = (newProducts: Product[]) => {
+        setProducts((prev) => [...prev, ...newProducts]);
+    }
     const lastProductRef = useRef(null)
     const { ref, entry } = useIntersection({
         root: lastProductRef.current,
         threshold: 1,
     });
-    const items = categoryProducts || products;
-    useEffect(() => {
-        if (page > 1) return;
-        fetchNextPage();
-    }, [])
     const fetchNextPage = async () => {
         if (isLoading || !hasNextPage) return;
         setIsLoading(true);
         try {
-            const { products: newProducts, hasNextPage: nextPage } = await getAllProducts(page, 18);
+            const { products: newProducts, hasNextPage: nextPage } = await fetchData(page);
             setHasNextPage(nextPage);
             if (newProducts.length > 0) {
                 addProducts(newProducts);
@@ -50,7 +61,7 @@ const ProductGrid = ({ products: categoryProducts }: ProductGridProps) => {
     console.log({ page, hasNextPage })
     return (
         <div className={`flex-1 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 mt-4 z-10`}>
-            {items?.map((product, index) => {
+            {products?.map((product, index) => {
                 const isLastProduct = index === products.length - 1;
                 return <AnimatePresence key={index} >
                     <motion.div
@@ -65,7 +76,6 @@ const ProductGrid = ({ products: categoryProducts }: ProductGridProps) => {
                     </motion.div>
                 </AnimatePresence>
             })}
-            {products.length}
             {isLoading && (
                 <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/20'>
                     <Loading />

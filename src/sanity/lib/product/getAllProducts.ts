@@ -1,4 +1,3 @@
-"use server";
 import { defineQuery } from "next-sanity";
 import { sanityFetch } from "../live";
 

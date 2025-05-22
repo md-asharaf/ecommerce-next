@@ -1,9 +1,9 @@
-import React from 'react'
 import { Product } from '../../sanity.types'
 import Link from 'next/link';
 import Image from 'next/image';
 import { imageUrl } from '@/lib/imageUrl';
 import { ElasticProduct } from '@/lib/elasticSearch';
+import { formatCurrency } from '@/lib/formatCurrency';
 interface ProductThumbnailProps {
     product: Product | ElasticProduct;
 }
@@ -31,9 +31,10 @@ const ProductThumbnail = ({ product }: ProductThumbnailProps) => {
                 <h2 className='text-lg font-semibold truncate text-gray-800'>
                     {product.name}
                 </h2>
-                <p className=''>
-                    ${product.price?.toFixed(2)}
-                </p>
+                <div className="flex space-x-4 text-lg">
+                    <span className="text-gray-500 line-through">{formatCurrency(product.price ?? 0, "INR")}</span>
+                    <span className="font-semibold">{formatCurrency((product.price ?? 0) * 0.70, "INR")}</span>
+                </div>
             </div>
         </Link>
     )

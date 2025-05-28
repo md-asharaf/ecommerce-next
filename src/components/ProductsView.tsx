@@ -2,15 +2,12 @@ import { Product } from '../../sanity.types';
 import ProductGrid from './ProductGrid';
 import CategorySelector from './CategorySelector';
 import SortingFilter from './SortingFilter';
-
 interface ProductsViewProps {
-    fetchData: (page?: number) => Promise<{
-        products: Product[];
-        hasNextPage: boolean;
-    }>;
+    products: Array<Product>;
     categoryId?: string;
+    ref?: any;
 }
-const ProductsView = ({ fetchData, categoryId }: ProductsViewProps) => {
+const ProductsView = ({ products, ref, categoryId = "" }: ProductsViewProps) => {
     return (
         <div className='flex flex-col'>
             <div className='flex items-center justify-between w-full'>
@@ -23,7 +20,7 @@ const ProductsView = ({ fetchData, categoryId }: ProductsViewProps) => {
             </div>
             <div className='flex-1'>
                 <div>
-                    <ProductGrid fetchData={fetchData} />
+                    <ProductGrid products={products} ref={ref} />
                 </div>
             </div>
         </div>

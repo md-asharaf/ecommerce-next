@@ -1,21 +1,9 @@
-"use client";
-
+import ClearCart from "@/components/ClearCart";
 import { Button } from "@/components/ui/button";
-import { useCartStore } from "@/store/cart";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 
-const SuccessPage = () => {
-  const searchParams = useSearchParams();
-  const orderId = searchParams.get("orderId");
-  const paymentId = searchParams.get("paymentId");
-  const { clearCart } = useCartStore();
-  useEffect(() => {
-    if (orderId) {
-      clearCart();
-    }
-  }, [orderId, clearCart])
+const SuccessPage = async ({ searchParams }: { searchParams: Promise<{ orderId: string, paymentId: string }> }) => {
+  const { orderId, paymentId } = await searchParams;
   if (!orderId) {
     return (
       <div className="flex flex-col items-center justify-center min-h-full bg-gray-50">
@@ -31,6 +19,7 @@ const SuccessPage = () => {
   }
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+      <ClearCart orderId={orderId} />
       <div className="bg-white p-12 rounded-xl shadow-lg max-w-2xl mx-4">
         <div className="flex justify-center mb-8">
           <div className="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center">

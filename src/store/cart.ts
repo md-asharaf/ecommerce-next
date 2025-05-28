@@ -50,7 +50,7 @@ export const useCartStore = create<CartState>()(
             },
             getTotalPrice: () => {
                 return get().items.reduce((total, item) => {
-                    return total + ((item.product.price ?? 0) * item.quantity);
+                    return total + (item.product.price ?? 0) * item.quantity;
                 }, 0);
             },
             getTotalItems: () => {
@@ -63,11 +63,10 @@ export const useCartStore = create<CartState>()(
                     get().items.find((item) => item.product._id === productId)
                         ?.quantity ?? 0
                 );
-            },
+            }
         }),
         {
             name: "cart-store",
         }
     )
 );
-

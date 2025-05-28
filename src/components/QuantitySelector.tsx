@@ -1,5 +1,4 @@
 "use client"
-import { useEffect, useState } from 'react'
 import { Product } from '../../sanity.types'
 import { useCartStore } from '@/store/cart'
 interface QuantitySelectorProps {
@@ -9,9 +8,6 @@ interface QuantitySelectorProps {
 const QuantitySelector = ({ product, disabled = false }: QuantitySelectorProps) => {
     const { addItem, getItemCount, removeItem } = useCartStore()
     const itemCount = getItemCount(product._id)
-    const [isClient, setIsClient] = useState(false)
-    useEffect(() => { setIsClient(true) }, [])
-    if (!isClient) return null
     return (
         <div className='flex items-center justify-center'>
             <table className='border-collapse border border-gray-300 rounded-md'>

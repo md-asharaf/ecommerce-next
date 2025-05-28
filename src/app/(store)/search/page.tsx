@@ -8,8 +8,8 @@ const SearchPage = async ({ searchParams }: {
     }>
 }) => {
     const { query } = await searchParams;
-    const products = await searchProductsByName(query);
-    
+    const { items: products } = await searchProductsByName(query);
+
     return (<div className="flex flex-col items-center justify-start min-h-screen p-4">
         <div className="p-8 rounded-lg w-full">
             <h1 className="text-3xl font-bold mb-6 text-center">

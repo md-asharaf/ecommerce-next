@@ -17,13 +17,13 @@ const BreadCrumbComponent = ({ items }: BreadCrumbComponentProps) => {
         <Breadcrumb>
             <BreadcrumbList>
                 <BreadcrumbItem>
-                    <BreadcrumbLink href="/">HOME</BreadcrumbLink>
+                    <BreadcrumbLink href="/" className="text-xs">HOME</BreadcrumbLink>
                 </BreadcrumbItem>
                 {items?.map(({ title, href }, index) => (
                     <div key={index} className="flex items-center">
                         <BreadcrumbSeparator />
                         <BreadcrumbItem >
-                            < BreadcrumbLink href={href} >{title.toUpperCase()}</BreadcrumbLink>
+                            < BreadcrumbLink href={href} className="text-xs" >{title.toUpperCase()}</BreadcrumbLink>
                         </BreadcrumbItem>
                     </div>
                 ))}

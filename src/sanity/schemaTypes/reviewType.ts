@@ -1,5 +1,4 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
-import { Product } from "../../../sanity.types";
 export const reviewType = defineType({
     name: "review",
     title: "Reviews",
@@ -19,14 +18,8 @@ export const reviewType = defineType({
             validation: (Rule) => Rule.required(),
         }),
         defineField({
-            name: "rating",
-            title: "Rating",
-            type: "number",
-            validation: (Rule) => Rule.required().min(1).max(5),
-        }),
-        defineField({
-            name: "review",
-            title: "Review",
+            name: "description",
+            title: "Description",
             type: "text",
             validation: (Rule) => Rule.min(10).max(500),
         }),
@@ -53,14 +46,12 @@ export const reviewType = defineType({
     ],
     preview: {
         select: {
-            productName: "product.name",
-            rating: "rating",
-            title: "title"
+            title: "title",
         },
-        prepare({ productName, rating, title }) {
+        prepare({ title }) {
             return {
                 title,
-                subtitle: `Rating: ${rating}/5 on ${productName}`,
+                subtitle: `Title: ${title}`,
             };
         },
     },

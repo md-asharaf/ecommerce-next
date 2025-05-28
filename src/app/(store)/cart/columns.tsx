@@ -3,9 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Product } from "../../../../sanity.types"
 import QuantitySelector from "@/components/QuantitySelector"
+import Link from "next/link"
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 export type CartItem = {
   product: Product
   quantity: number
@@ -20,7 +19,7 @@ export const columns: ColumnDef<CartItem>[] = [
       const imageUrl = product?.imageUrl
 
       return (
-        <div className="flex items-center gap-4">
+        <Link href={`/product/${product.slug?.current}`} className="flex items-center gap-4">
           {imageUrl && (
             <img
               src={imageUrl}
@@ -28,11 +27,11 @@ export const columns: ColumnDef<CartItem>[] = [
               className="h-24 w-24 rounded-lg object-cover shadow-sm"
             />
           )}
-          <div className="space-y-1 max-w-[300px]">
+          <div className="space-y-1 xl:max-w-[300px]">
             <p className="font-medium text-base text-gray-900 truncate">{product.name}</p>
-            <p className="text-sm text-gray-500 whitespace-pre-wrap break-words">{product.description}</p>
+            <p className="text-sm text-gray-500 whitespace-pre-wrap break-words line-clamp-2">{product.description} {product.description}</p>
           </div>
-        </div>
+        </Link>
       )
     }
   },

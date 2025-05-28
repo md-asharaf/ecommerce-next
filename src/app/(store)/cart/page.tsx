@@ -1,7 +1,7 @@
 "use client"
 import { SignInButton, useAuth, useUser } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useCartStore } from "@/store/cart"
 import { loadScript } from "@/lib/loadScript"
 import { RazorpayOptions } from "@/types/razorpay"
@@ -9,6 +9,8 @@ import { createRazorpayOrder } from "@/actions/createRazorpayOrder"
 import { RazorpaySuccessResponse, verifyRazorpaySignature } from "@/actions/verifyRazorpaySignature"
 import { DataTable } from "@/components/ui/data-table"
 import { columns } from "./columns"
+import LoadingSpinner from "@/components/LoadingSpinner"
+
 export type Metadata = {
     email: string;
     clerkUserId: string;
@@ -21,18 +23,20 @@ export type Metadata = {
     zip: string;
     phone: string;
 };
+
 const CartPage = () => {
     const groupedItems = useCartStore((state) => state.items)
     const totalPrice = useCartStore((state) => state.getTotalPrice())
     const totalItems = useCartStore((state) => state.getTotalItems())
-    const { isSignedIn } = useAuth();
-    const { user } = useUser();
+    const { user,isSignedIn } = useUser();
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState(false);
+    const [isClient,setIsClient] = useState(false);
+    const [isProcessing, setIsProcessing] = useState(false);
     const [verificationStatus, setVerificationStatus] = useState<"loading" | "success" | "error" | null>(null);
+    
     const handleCheckout = async () => {
         if (!isSignedIn) return;
-        setIsLoading(true)
+        setIsProcessing(true)
         try {
             const metadata: Partial<Metadata> = {
                 clerkUserId: user!.id,
@@ -73,7 +77,6 @@ const CartPage = () => {
                         }
                     }, url ? 2000 : 3000);
                 }
-
             };
             try {
                 const razorPopup = new window.Razorpay(options);
@@ -84,62 +87,57 @@ const CartPage = () => {
         } catch (error) {
             console.error("Error during checkout", error);
         } finally {
-            setIsLoading(false)
+            setIsProcessing(false)
         }
-
     }
+    useEffect(()=>setIsClient(true),[])
+
     const data = groupedItems.map((item) => {
         return {
             product: item.product,
             quantity: item.quantity,
         }
     })
+    if(!isClient){
+        return <LoadingSpinner/>
+    }
     if (groupedItems.length == 0) {
-        return <div className="container mx-auto p-4 flex flex-col items-center justify-center min-h-[50vh]">
-            <h1 className="text-2xl font-bold mb-6 text-gray-800">Your Cart</h1>
+        return <div className="container mx-auto p-8 max-w-6xl bg-white min-h-[calc(100vh-4rem)] text-center">
+            <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
             <p className="text-gray-600 text-lg">Your Cart is Empty</p>
         </div>
     }
-    return <div className="container mx-auto p-4 max-w-6xl">
+
+    return <div className="container mx-auto p-8 max-w-6xl bg-white min-h-[calc(100vh-4rem)]">
         <h1 className="text-2xl font-bold mb-4">
             Your Cart
         </h1>
         <div className="flex flex-col lg:flex-row gap-8">
-            <DataTable columns={columns} data={data} />
+            <div className="flex-1"><DataTable columns={columns} data={data} /></div>
             <div className="w-full lg:w-80 lg:sticky lg:top-4 h-fit bg-white p-6 border rounded order-first lg:order-last fixed bottom-0 left-0 lg:left-auto">
                 <h3 className="text-xl font-semibold">Order Summary</h3>
                 <div className="mt-4 space-y-2">
                     <p className="flex justify-between">
-                        <span>
-                            Items:
-                        </span>
-                        <span>
-                            {totalItems}
-                        </span>
+                        <span>Items:</span>
+                        <span>{totalItems}</span>
                     </p>
                     <p className="flex justify-between text-2xl font-bold border-t pt-2">
-                        <span>
-                            Total:
-                        </span>
-                        <span>
-                            {totalPrice.toFixed(2)}
-                        </span>
+                        <span>Total:</span>
+                        <span>{totalPrice.toFixed(2)}</span>
                     </p>
-                    {
-                        isSignedIn ? (
-                            <button
-                                onClick={handleCheckout}
-                                disabled={isLoading}
-                                className="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:bg-gray-400"
-                            >
-                                {isLoading ? "PROCESSING" : "PROCEED TO CHECKOUT"}
-                            </button>
-                        ) : (
-                            <SignInButton>
-                                <button className="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">SIGN IN TO CHECKOUT</button>
-                            </SignInButton>
-                        )
-                    }
+                    {isSignedIn ? (
+                        <button
+                            onClick={handleCheckout}
+                            disabled={isProcessing}
+                            className="mt-4 w-full bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500 disabled:bg-gray-400"
+                        >
+                            {isProcessing ? "PROCESSING" : "PROCEED TO CHECKOUT"}
+                        </button>
+                    ) : (
+                        <SignInButton>
+                            <button className="mt-4 w-full bg-yellow-400 text-white px-4 py-2 rounded hover:bg-yellow-500">SIGN IN TO CHECKOUT</button>
+                        </SignInButton>
+                    )}
                 </div>
             </div>
         </div>
@@ -187,8 +185,8 @@ const CartPage = () => {
                                         d="M6 18L18 6M6 6l12 12"
                                     />
                                 </svg>
-                            </div></>
-
+                            </div>
+                        </>
                     )}
                 </div>
             </div>

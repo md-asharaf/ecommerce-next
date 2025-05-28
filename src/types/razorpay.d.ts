@@ -25,8 +25,8 @@ export type LineItem = {
     type: string;
     sku: string;
     variant_id: string;
-    price: string;
-    offer_price: string;
+    price: number;
+    offer_price: number;
     tax_amount: number;
     quantity: number;
     name: string;

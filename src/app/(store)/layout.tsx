@@ -10,12 +10,12 @@ import DisableDraftMode from '@/components/DisableDraftMode'
 import { VisualEditing } from 'next-sanity'
 import { Inter } from 'next/font/google'
 
-// Load the font with weights and subsets you want
 const inter = Inter({
   subsets: ['latin'],
-  weight: ['400', '600'], // Choose what you need
+  weight: ['400', '600'],
   display: 'swap',
 })
+
 export const metadata: Metadata = {
   title: 'Shopper',
   description: 'Shopper - Your one-stop shop for all your needs',
@@ -28,17 +28,19 @@ export default async function RootLayout({
 }>) {
   return (
     <ClerkProvider dynamic>
-      <html lang="en" className={`${inter.className}`}>
-        <body cz-shortcut-listen="true">
+      <html lang="en" className={inter.className}>
+        <body>
           {(await draftMode()).isEnabled && (
             <>
               <DisableDraftMode />
               <VisualEditing />
             </>
           )}
-          <main>
+          <main className="min-h-screen flex flex-col">
             <Header />
-            {children}
+            <div className="flex-1 pt-16 bg-gray-100">
+              {children}
+            </div>
           </main>
           <SanityLive />
         </body>

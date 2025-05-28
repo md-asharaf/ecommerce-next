@@ -21,7 +21,7 @@ export const createRazorpayOrder = async (
             return total + (product.price ?? 0) * quantity;
         }, 0);
 
-        const payload: RazorpayOrderPayload = {
+        const payload = {
             amount: Math.round(totalPrice * 100),
             currency: "INR",
             payment_capture: true,
@@ -30,8 +30,8 @@ export const createRazorpayOrder = async (
                     type: "product",
                     sku: product._id ?? "",
                     variant_id: product._rev ?? "",
-                    price: `${(product.price ?? 0) * 100}`,
-                    offer_price: `${(product.price ?? 0) * 100}`,
+                    price: Math.round((product.price ?? 0) * 100),
+                    offer_price: Math.round((product.price ?? 0) * 100),
                     tax_amount: 0,
                     quantity,
                     name: product.name ?? "",
@@ -48,8 +48,9 @@ export const createRazorpayOrder = async (
             ),
             notes: metadata,
         };
+
         console.log("Payload for Razorpay Order", payload);
-        const order = await razorpay.orders.create(payload);
+        const order = await razorpay.orders.create(payload as any);
         return order || null;
     } catch (error) {
         console.error("Error creating checkout session", error);

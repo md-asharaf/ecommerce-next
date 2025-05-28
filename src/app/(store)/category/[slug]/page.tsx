@@ -1,7 +1,6 @@
 import BreadCrumbComponent from "@/components/BreadCrumbComponent";
-import ProductsView from "@/components/ProductsView";
+import CategoryProducts from "@/components/CategoryProducts";
 import { getCategoryBySlug } from "@/sanity/lib/category/getCategoryBySlug";
-import { getProductsByCategory } from "@/sanity/lib/product/getProductsByCategory";
 import { notFound } from "next/navigation";
 
 const CategoryPage = async ({ params }: {
@@ -20,18 +19,11 @@ const CategoryPage = async ({ params }: {
             href: `/category/${category.slug?.current}`
         }
     ];
-    const fetchData = async (page?: number) => {
-        "use server";
-        return await getProductsByCategory(slug, page);
-    };
     return (
         <div className="flex flex-col justify-start min-h-screen p-4">
             <div className="rounded-lg sm:p-8 w-full space-y-2">
                 <BreadCrumbComponent items={items} />
-                <ProductsView
-                    fetchData={fetchData}
-                    categoryId={category._id}
-                />
+                <CategoryProducts categoryId={category._id} slug={slug} />
             </div>
         </div>
     )

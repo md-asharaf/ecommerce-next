@@ -1,45 +1,45 @@
+"use server";
 import { defineQuery } from "next-sanity";
 import { sanityFetch } from "../live";
+import { PaginationResult } from "@/hooks/use-pagination";
+import { Product } from "../../../../sanity.types";
 
 export const getProductsByCategory = async (
     slug: string,
     page: number = 1,
     limit: number = 10
-) => {
+): Promise<PaginationResult<Product>> => {
     const start = (page - 1) * limit;
     const end = start + limit;
 
-    const COUNT_QUERY = defineQuery(`
-        count(*[_type == "product" && references(*[_type == "category" && slug.current == $slug]._id)])
-    `);
-
     const PRODUCTS_BY_CATEGORY_QUERY = defineQuery(`
-        *[_type == "product" && references(*[_type == "category" && slug.current == $slug]._id)] | order(name asc)[$start...$end]
+        {
+            "items": *[_type == "product" && references(*[_type == "category" && slug.current == $slug]._id)] | order(name asc)[$start...$end],
+            "totalCount": count(*[_type == "product" && references(*[_type == "category" && slug.current == $slug]._id)])
+        }
     `);
 
     try {
-        const [products, totalCount] = await Promise.all([
-            sanityFetch({
-                query: PRODUCTS_BY_CATEGORY_QUERY,
-                params: { slug, start, end },
-            }),
-            sanityFetch({
-                query: COUNT_QUERY,
-                params: { slug },
-            }),
-        ]);
+        const result = await sanityFetch({
+            query: PRODUCTS_BY_CATEGORY_QUERY,
+            params: { slug, start, end },
+        });
+
+        const items = result.data?.items || [];
+        const totalCount = result.data?.totalCount || 0;
+        const totalPages = Math.ceil(totalCount / limit);
 
         return {
-            products: products.data || [],
-            totalCount: totalCount.data || 0,
-            hasNextPage: totalCount.data > end,
+            items,
+            totalCount,
+            totalPages,
         };
     } catch (error) {
         console.error("Error fetching products by category:", error);
         return {
-            products: [],
+            items: [],
             totalCount: 0,
-            hasNextPage: false,
+            totalPages: 0,
         };
     }
 };

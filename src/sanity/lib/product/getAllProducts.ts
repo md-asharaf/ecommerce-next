@@ -1,40 +1,41 @@
+"use server"
 import { defineQuery } from "next-sanity";
 import { sanityFetch } from "../live";
+import { PaginationResult } from "@/hooks/use-pagination";
+import { Product } from "../../../../sanity.types";
 
-export const getAllProducts = async (page: number = 1, limit: number = 10) => {
+export const getAllProducts = async (page: number = 1, limit: number = 10):Promise<PaginationResult<Product>> => {
     const start = (page - 1) * limit;
     const end = start + limit;
 
-    const COUNT_QUERY = defineQuery(`
-        count(*[_type == "product"])
-    `);
-
     const ALL_PRODUCTS_QUERY = defineQuery(`
-        *[_type == "product"] | order(name asc)[$start...$end]
+        {
+            "items": *[_type == "product"] | order(name asc)[$start...$end],
+            "totalCount": count(*[_type == "product"])
+        }
     `);
 
     try {
-        const [products, totalCount] = await Promise.all([
-            sanityFetch({
-                query: ALL_PRODUCTS_QUERY,
-                params: { start, end },
-            }),
-            sanityFetch({
-                query: COUNT_QUERY,
-            }),
-        ]);
+        const result = await sanityFetch({
+            query: ALL_PRODUCTS_QUERY,
+            params: { start, end },
+        });
+
+        const items = result.data?.items || [];
+        const totalCount = result.data?.totalCount || 0;
+        const totalPages = Math.ceil(totalCount / limit);
 
         return {
-            products: products.data || [],
-            totalCount: totalCount.data || 0,
-            hasNextPage: totalCount.data > end,
+            items,
+            totalCount,
+            totalPages,
         };
     } catch (error) {
         console.error("Error fetching products:", error);
         return {
-            products: [],
+            items: [],
             totalCount: 0,
-            hasNextPage: false,
+            totalPages: 0,
         };
     }
 };

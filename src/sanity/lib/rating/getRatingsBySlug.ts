@@ -1,17 +1,22 @@
-"use server"
+"use server";
 import { defineQuery } from "next-sanity";
 import { sanityFetch } from "../live";
 import { PaginationResult } from "@/hooks/use-pagination";
 import { Rating, Review } from "../../../../sanity.types";
-
+export interface PopulatedRating extends Omit<Rating, "review"> {
+    review: Review;
+}
 export const getRatingsBySlug = async (
     slug: string,
     page: number = 1,
     limit: number = 10
-): Promise<PaginationResult<Rating>> => {
+): Promise<PaginationResult<PopulatedRating>> => {
     const RATINGS_BY_SLUG_QUERY = defineQuery(`
         {
-            "items": *[_type == "rating" && product->slug.current == $slug] | order(createdAt desc) [$start...$end],
+            "items": *[_type == "rating" && product->slug.current == $slug] | order(_createdAt desc) [$start...$end]{
+                ...,
+                review->
+            },
             "totalCount": count(*[_type == "rating" && product->slug.current == $slug])
         }
     `);
@@ -32,14 +37,13 @@ export const getRatingsBySlug = async (
         const items = result.data?.items || [];
         const totalCount = result.data?.totalCount || 0;
         const totalPages = Math.ceil(totalCount / limit);
-
         return {
-            items,
+            items: items.filter((item): item is PopulatedRating => item.review !== null),
             totalPages,
             totalCount,
         };
     } catch (error) {
-        console.error("Error fetching reviews by slug:", error);
+        console.error("Error fetching ratings by slug:", error);
         return {
             items: [],
             totalPages: 0,

@@ -21,7 +21,7 @@ export const createRazorpayOrder = async (
             return total + (product.price ?? 0) * quantity;
         }, 0);
 
-        const payload = {
+        const payload:RazorpayOrderPayload = {
             amount: Math.round(totalPrice * 100),
             currency: "INR",
             payment_capture: true,

@@ -7,13 +7,13 @@ import { notFound } from "next/navigation";
 import { getCategoryByRef } from "@/sanity/lib/category/getCategoryByRef";
 import { formatCurrency } from "@/lib/formatCurrency";
 import AddToCartButton from "@/components/AddToCartButton";
-import { getRatingsBySlug } from "@/sanity/lib/rating/getRatingsBySlug";
 import ThumbnailGallery from "@/components/ThumbnailGallery";
-import Reviews from "@/components/Reviews";
-import { Rating, Review } from "../../../../../sanity.types";
 import StarRating from "@/components/StarRating";
-import { getReviewsBySlug } from "@/sanity/lib/review/getReviewsBySlug";
 import { Button } from "@/components/ui/button";
+import { getRatingsCountAndAverageBySlug } from "@/sanity/lib/rating/getRatingsCountAndAverageBySlug";
+import { getRatingsBySlug } from "@/sanity/lib/rating/getRatingsBySlug";
+import Reviews from "@/components/Reviews";
+import Link from "next/link";
 
 interface ProductPageProps {
   params: Promise<{
@@ -28,13 +28,7 @@ const ProductPage = async ({ params }: ProductPageProps) => {
     return notFound();
   }
   const category = await getCategoryByRef(product.category?._ref!);
-  const { items: ratings } = (await getRatingsBySlug(slug)) as { items: Rating[] };
-  const { items: reviews } = (await getReviewsBySlug(slug)) as { items: Review[] };
-
-  const ratingSum = ratings.reduce((acc, curr) => acc + (curr.rating ?? 0), 0);
-  const ratingCount = ratings.length;
-  const rating = ratingCount > 0 ? ratingSum / ratingCount : 0;
-  const reviewCount = reviews.length;
+  const [{ ratingCount, ratingAvg, reviewCount }, { items: reviews }] = await Promise.all([getRatingsCountAndAverageBySlug(slug), getRatingsBySlug(slug, 1, 3)]);
   const isOutOfStock = product.stock === 0;
 
   const items = [
@@ -61,7 +55,6 @@ const ProductPage = async ({ params }: ProductPageProps) => {
     "Environmentally friendly manufacturing process",
     "2-year warranty included",
   ];
-
   return (
     <div className="container mx-auto px-4 py-6 max-w-7xl bg-white min-h-[calc(100vh-4rem)]">
       <div className="grid gap-6 lg:grid-cols-12">
@@ -116,8 +109,8 @@ const ProductPage = async ({ params }: ProductPageProps) => {
           </h1>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1 bg-green-100 text-green-800 text-sm font-medium px-2 py-1 rounded">
-              <StarRating rating={rating} />
-              <span>{(rating).toFixed(1)}</span>
+              <StarRating rating={ratingAvg} />
+              <span>{(ratingAvg).toFixed(1)}</span>
             </div>
             <span className="text-sm text-gray-600">
               ({ratingCount} Ratings, {reviewCount} Reviews)
@@ -208,7 +201,19 @@ const ProductPage = async ({ params }: ProductPageProps) => {
               </ul>
             </div>
           )}
-          {reviewCount > 0 && <Reviews reviews={reviews} />}
+          {reviewCount > 0 &&
+            <div>
+              <Reviews ratings={reviews} />
+              {4 > 3 && (
+                <Link
+                  href={`/product/${slug}/reviews`}
+                  className="mt-4 inline-block text-blue-600 hover:underline"
+                >
+                  See all {reviews.length} reviews
+                </Link>
+              )}
+            </div>
+          }
         </div>
 
       </div>

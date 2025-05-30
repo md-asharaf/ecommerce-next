@@ -1,37 +1,45 @@
 import { getUsersFromClerk } from '@/actions/getUsersFromClerk'
-import { Review } from '../../sanity.types'
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { PopulatedRating } from '@/sanity/lib/rating/getRatingsBySlug'
+import StarRating from './StarRating'
 
-const Reviews = async ({ reviews }: { reviews: Review[] }) => {
-    const userIds = reviews.map((review)=>review.clerkUserId!)
-    const users = await getUsersFromClerk(userIds)
+const Reviews = async ({ ratings }: { ratings: PopulatedRating[] }) => {
+    const userIds = ratings.map((rating) => rating.clerkUserId!)
+    const { data: users } = await getUsersFromClerk(userIds)
+    const ratingsWithUsers = ratings.map((rating) => {
+        const user = users?.find((user) => user.id === rating.clerkUserId)
+        const { clerkUserId, ...rest } = rating
+        return {
+            ...rest,
+            user: {
+                name: ((user?.firstName ?? '') + ' ' + (user?.lastName ?? '')) || "Anonymous",
+                imageUrl: user?.imageUrl || "",
+            }
+        }
+    })
     return (
         <div className="mt-8">
             <h2 className="text-2xl font-bold text-gray-900">Customer Reviews</h2>
             <div className="mt-4 space-y-4">
-                {reviews
+                {ratingsWithUsers
                     .slice(0, 3)
-                    .map((review, index) => (
+                    .map((rating, index) => (
                         <div key={index} className="border-b py-4">
                             <div className="flex items-center gap-2">
-                                <span className="text-sm font-medium text-gray-900">
-                                    {review.clerkUserId || "Anonymous"}
-                                </span>
-                                {/* <span className="text-sm text-gray-600">
-                                    {review.rating?.toFixed(1)} ★
-                                </span> */}
+                                <StarRating rating={rating.rating!} />
+                                <span className="font-medium">{rating.review.title}</span>
                             </div>
-                            <p className="mt-1 text-gray-700">{review.description}</p>
+                            <div className='text-base'>{rating.review.description}</div>
+                            <div className="flex items-center gap-2">
+                                <Avatar>
+                                    <AvatarImage src={rating.user.imageUrl} />
+                                    <AvatarFallback>{rating.user.name}</AvatarFallback>
+                                </Avatar>
+                                <span className='text-base'>{rating.user.name}</span>
+                            </div>
                         </div>
                     ))}
             </div>
-            {/* {filteredReviews.length > 3 && (
-                <a
-                    href="#all-reviews"
-                    className="mt-4 inline-block text-blue-600 hover:underline"
-                >
-                    See all {filteredReviews.length} reviews
-                </a>
-            )} */}
         </div>
     )
 }

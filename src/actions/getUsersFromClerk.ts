@@ -7,6 +7,9 @@ export const getUsersFromClerk = async (userIds:string[]) =>{
         return users;
     } catch (error) {
         console.error('Error fetching Clerk User',error)
-        return null;
+        return {
+            data:[],
+            totalCount:0
+        }
     }
 }

@@ -1,5 +1,5 @@
 "use client"
-import { SignInButton, useAuth, useUser } from "@clerk/nextjs"
+import { SignInButton, useUser } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useCartStore } from "@/store/cart"

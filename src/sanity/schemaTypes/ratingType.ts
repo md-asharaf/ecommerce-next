@@ -22,17 +22,21 @@ export const ratingType = defineType({
             title: "Rating",
             type: "number",
             validation: (Rule) => Rule.required().min(1).max(5),
+        }),
+        defineField({
+            name: "review",
+            title: "Review",
+            type: "reference",
+            to: [{ type: "review" }],
         })
     ],
     preview: {
         select: {
             productName: "product.name",
             rating: "rating",
-            title: "title",
         },
-        prepare({ productName, rating, title }) {
+        prepare({ productName, rating }) {
             return {
-                title,
                 subtitle: `Rating: ${rating}/5 on ${productName}`,
             };
         },

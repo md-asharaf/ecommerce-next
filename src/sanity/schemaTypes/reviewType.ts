@@ -5,19 +5,6 @@ export const reviewType = defineType({
     type: "document",
     fields: [
         defineField({
-            name: "product",
-            title: "Product",
-            type: "reference",
-            to: [{ type: "product" }],
-            validation: (Rule) => Rule.required(),
-        }),
-        defineField({
-            name: "clerkUserId",
-            title: "Clerk User ID",
-            type: "string",
-            validation: (Rule) => Rule.required(),
-        }),
-        defineField({
             name: "description",
             title: "Description",
             type: "text",

@@ -14,9 +14,8 @@ const ProductThumbnail = ({ product }: ProductThumbnailProps) => {
   const originalPrice = product.price ?? 0;
   const discountedPrice = originalPrice * 0.7;
   const discountPercentage = Math.round((1 - discountedPrice / originalPrice) * 100);
-  // Mock rating; replace with product.rating if available
-  const rating = product.rating ?? 4.2; // Adjust based on your schema
-  const ratingCount = product.ratingCount ?? 123; // Mock data; adjust as needed
+  const rating = 4.2; 
+  const ratingCount = 123; 
 
   return (
     <Link
@@ -25,7 +24,6 @@ const ProductThumbnail = ({ product }: ProductThumbnailProps) => {
         isOutOfStock && 'opacity-60'
       } w-full aspect-[3/4]`}
     >
-      {/* Image Section */}
       <div className="relative w-full flex-1 overflow-hidden rounded-t-lg">
         <Image
           src={product.image ? imageUrl(product.image).url() : product.imageUrl || '/placeholder.png'}
@@ -33,24 +31,20 @@ const ProductThumbnail = ({ product }: ProductThumbnailProps) => {
           alt={product.name || 'Product Image'}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
-          priority={true} // Prioritize for homepage visibility
+          priority={true}
         />
         {isOutOfStock && (
           <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40">
             <span className="text-white font-semibold text-base">Out of Stock</span>
           </div>
         )}
-        {/* Discount Badge */}
       </div>
 
-      {/* Content Section */}
       <div className="p-3 sm:p-4 flex flex-col gap-2">
-        {/* Product Name */}
         <h2 className="text-base sm:text-lg font-semibold text-gray-800 line-clamp-2">
           {product.name || 'Unnamed Product'}
         </h2>
 
-        {/* Ratings */}
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-1 bg-green-100 text-green-800 text-xs font-medium px-1.5 py-0.5 rounded">
             <span>{rating.toFixed(1)}</span>
@@ -65,7 +59,6 @@ const ProductThumbnail = ({ product }: ProductThumbnailProps) => {
           <span className="text-xs text-gray-500">({ratingCount})</span>
         </div>
 
-        {/* Price and Discount */}
         <div className="flex items-center gap-2">
           <span className="text-base font-bold">
             {formatCurrency(discountedPrice, "INR")}

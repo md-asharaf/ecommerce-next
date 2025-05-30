@@ -3,8 +3,8 @@ import { imageUrl } from "@/lib/imageUrl";
 import { PopulatedOrder } from "@/sanity/lib/order/getMyOrders";
 import Image from "next/image";
 
-const OrderItem = ({ order }: { order: PopulatedOrder }) => (
-    <div className="border border-gray-200 rounded-lg shadow-sm overflow-hidden">
+const OrderItem = ({ order }: { order: PopulatedOrder }) => {
+    return (<div className="border border-gray-200 rounded-lg shadow-sm overflow-hidden">
         <div className="p-4 sm:p-6 border-b border-gray-200">
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-4">
                 <div>
@@ -79,6 +79,6 @@ const OrderItem = ({ order }: { order: PopulatedOrder }) => (
                 </div>
             </div>
         </div>
-    </div>
-)
+    </div>)
+}
 export default OrderItem;

@@ -82,6 +82,12 @@ export type Rating = {
   };
   clerkUserId?: string;
   rating?: number;
+  review?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "review";
+  };
 };
 
 export type Review = {
@@ -90,13 +96,6 @@ export type Review = {
   _createdAt: string;
   _updatedAt: string;
   _rev: string;
-  product?: {
-    _ref: string;
-    _type: "reference";
-    _weak?: boolean;
-    [internalGroqTypeReferenceTo]?: "product";
-  };
-  clerkUserId?: string;
   description?: string;
   title?: string;
   images?: Array<{
@@ -526,9 +525,9 @@ export type PRODUCTS_BY_CATEGORY_QUERYResult = {
 };
 
 // Source: ./src/sanity/lib/rating/getRatingsBySlug.ts
-// Variable: REVIEWS_BY_SLUG_QUERY
-// Query: {            "items": *[_type == "rating" && product->slug.current == $slug] | order(createdAt desc) [$start...$end],            "totalCount": count(*[_type == "rating" && product->slug.current == $slug])        }
-export type REVIEWS_BY_SLUG_QUERYResult = {
+// Variable: RATINGS_BY_SLUG_QUERY
+// Query: {            "items": *[_type == "rating" && product->slug.current == $slug] | order(_createdAt desc) [$start...$end]{                ...,                review->            },            "totalCount": count(*[_type == "rating" && product->slug.current == $slug])        }
+export type RATINGS_BY_SLUG_QUERYResult = {
   items: Array<{
     _id: string;
     _type: "rating";
@@ -543,9 +542,74 @@ export type REVIEWS_BY_SLUG_QUERYResult = {
     };
     clerkUserId?: string;
     rating?: number;
+    review: {
+      _id: string;
+      _type: "review";
+      _createdAt: string;
+      _updatedAt: string;
+      _rev: string;
+      description?: string;
+      title?: string;
+      images?: Array<{
+        asset?: {
+          _ref: string;
+          _type: "reference";
+          _weak?: boolean;
+          [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+        };
+        media?: unknown;
+        hotspot?: SanityImageHotspot;
+        crop?: SanityImageCrop;
+        _type: "image";
+        _key: string;
+      }>;
+    } | null;
   }>;
   totalCount: number;
 };
+
+// Source: ./src/sanity/lib/rating/getRatingsCountAndAverageBySlug.ts
+// Variable: RATINGS_COUNT_AND_AVG_BY_SLUG_QUERY
+// Query: {            "ratingCount": count(*[_type == "rating" && product->slug.current == $slug]),            "reviewCount": count(*[_type == "rating" && product->slug.current == $slug && defined(review)]),            "ratingAvg": round(math::avg(*[_type == "rating" && product->slug.current == $slug].rating) * 10) / 10        }
+export type RATINGS_COUNT_AND_AVG_BY_SLUG_QUERYResult = {
+  ratingCount: number;
+  reviewCount: number;
+  ratingAvg: number | null;
+};
+
+// Source: ./src/sanity/lib/review/getReviewsBySlug.ts
+// Variable: REVIEWS_BY_SLUG_QUERY
+// Query: {            "items": *[_type == "review" && product->slug.current == $slug] | order(createdAt desc) [$start...$end],            "totalCount": count(*[_type == "review" && product->slug.current == $slug])        }
+export type REVIEWS_BY_SLUG_QUERYResult = {
+  items: Array<{
+    _id: string;
+    _type: "review";
+    _createdAt: string;
+    _updatedAt: string;
+    _rev: string;
+    description?: string;
+    title?: string;
+    images?: Array<{
+      asset?: {
+        _ref: string;
+        _type: "reference";
+        _weak?: boolean;
+        [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+      };
+      media?: unknown;
+      hotspot?: SanityImageHotspot;
+      crop?: SanityImageCrop;
+      _type: "image";
+      _key: string;
+    }>;
+  }>;
+  totalCount: number;
+};
+
+// Source: ./src/sanity/lib/review/getReviewsCountBySlug.ts
+// Variable: REVIEWS_COUNT_BY_SLUG_QUERY
+// Query: count(*[_type == "review" && product->slug.current == $slug])
+export type REVIEWS_COUNT_BY_SLUG_QUERYResult = number;
 
 // Source: ./src/sanity/lib/sale/getActiveSaleByCouponCode.ts
 // Variable: ACTIVE_SALE_BY_COUPON_QUERY
@@ -576,7 +640,10 @@ declare module "@sanity/client" {
     "\n        {\n            \"items\": *[_type == \"product\"] | order(name asc)[$start...$end],\n            \"totalCount\": count(*[_type == \"product\"])\n        }\n    ": ALL_PRODUCTS_QUERYResult;
     "\n        *[_type==\"product\" && slug.current == $slug]\n        | order(name asc)\n        ": PRODUCT_BY_SLUG_QUERYResult;
     "\n        {\n            \"items\": *[_type == \"product\" && references(*[_type == \"category\" && slug.current == $slug]._id)] | order(name asc)[$start...$end],\n            \"totalCount\": count(*[_type == \"product\" && references(*[_type == \"category\" && slug.current == $slug]._id)])\n        }\n    ": PRODUCTS_BY_CATEGORY_QUERYResult;
-    "\n        {\n            \"items\": *[_type == \"rating\" && product->slug.current == $slug] | order(createdAt desc) [$start...$end],\n            \"totalCount\": count(*[_type == \"rating\" && product->slug.current == $slug])\n        }\n    ": REVIEWS_BY_SLUG_QUERYResult;
+    "\n        {\n            \"items\": *[_type == \"rating\" && product->slug.current == $slug] | order(_createdAt desc) [$start...$end]{\n                ...,\n                review->\n            },\n            \"totalCount\": count(*[_type == \"rating\" && product->slug.current == $slug])\n        }\n    ": RATINGS_BY_SLUG_QUERYResult;
+    "\n        {\n            \"ratingCount\": count(*[_type == \"rating\" && product->slug.current == $slug]),\n            \"reviewCount\": count(*[_type == \"rating\" && product->slug.current == $slug && defined(review)]),\n            \"ratingAvg\": round(math::avg(*[_type == \"rating\" && product->slug.current == $slug].rating) * 10) / 10\n        }\n    ": RATINGS_COUNT_AND_AVG_BY_SLUG_QUERYResult;
+    "\n        {\n            \"items\": *[_type == \"review\" && product->slug.current == $slug] | order(createdAt desc) [$start...$end],\n            \"totalCount\": count(*[_type == \"review\" && product->slug.current == $slug])\n        }\n    ": REVIEWS_BY_SLUG_QUERYResult;
+    "\n        count(*[_type == \"review\" && product->slug.current == $slug])\n    ": REVIEWS_COUNT_BY_SLUG_QUERYResult;
     " \n        *[_type == \"sale\" \n            && isActive == true \n            && couponCode == $couponCode\n        ] | order(validFrom desc)[0]\n    ": ACTIVE_SALE_BY_COUPON_QUERYResult;
   }
 }

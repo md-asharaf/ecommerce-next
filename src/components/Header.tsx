@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PackageIcon, TrolleyIcon } from "@sanity/icons";
 import { useCartStore } from "@/store/cart";
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import Image from "next/image";
 import favicon from "@/app/favicon.ico"
@@ -18,8 +18,6 @@ export const Header = () => {
     useEffect(() => {
         if (debouncedValue) {
             router.push(`/search?query=${encodeURIComponent(debouncedValue)}`);
-        } else if (window.location.pathname === "/search") {
-            router.push(`/`);
         }
     }, [debouncedValue, router]);
 

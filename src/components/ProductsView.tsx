@@ -2,12 +2,13 @@ import { Product } from '../../sanity.types';
 import ProductGrid from './ProductGrid';
 import CategorySelector from './CategorySelector';
 import SortingFilter from './SortingFilter';
+import { FetchFunction } from '@/hooks/use-pagination';
+import { ElasticProduct } from '@/lib/elasticSearch';
 interface ProductsViewProps {
-    products: Array<Product>;
-    categoryId?: string;
-    ref?: any;
+    categoryId?: string,
+    fetch:FetchFunction<Product | ElasticProduct>
 }
-const ProductsView = ({ products, ref, categoryId = "" }: ProductsViewProps) => {
+const ProductsView = ({ fetch, categoryId = "" }: ProductsViewProps) => {
     return (
         <div className='flex flex-col'>
             <div className='flex items-center justify-between w-full'>
@@ -20,7 +21,7 @@ const ProductsView = ({ products, ref, categoryId = "" }: ProductsViewProps) => 
             </div>
             <div className='flex-1'>
                 <div>
-                    <ProductGrid products={products} ref={ref} />
+                    <ProductGrid fetch={fetch} />
                 </div>
             </div>
         </div>

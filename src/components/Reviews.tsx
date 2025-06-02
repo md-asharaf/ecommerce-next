@@ -1,9 +1,17 @@
+import {
+    Pagination,
+    PaginationContent,
+    PaginationItem,
+    PaginationLink,
+    PaginationNext,
+    PaginationPrevious
+} from "@/components/ui/pagination"
 import { getUsersFromClerk } from '@/actions/getUsersFromClerk'
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { PopulatedRating } from '@/sanity/lib/rating/getRatingsBySlug'
 import StarRating from './StarRating'
+import ThumbnailGallery from "./ThumbnailGallery"
 
-const Reviews = async ({ ratings }: { ratings: PopulatedRating[] }) => {
+const PaginatedReviews = async ({ ratings, totalPages, currentPage }: { ratings: PopulatedRating[], totalPages: number, currentPage: number }) => {
     const userIds = ratings.map((rating) => rating.clerkUserId!)
     const { data: users } = await getUsersFromClerk(userIds)
     const ratingsWithUsers = ratings.map((rating) => {
@@ -17,31 +25,59 @@ const Reviews = async ({ ratings }: { ratings: PopulatedRating[] }) => {
             }
         }
     })
+    const data = [...ratingsWithUsers, ...ratingsWithUsers, ...ratingsWithUsers]
     return (
-        <div className="mt-8">
-            <h2 className="text-2xl font-bold text-gray-900">Customer Reviews</h2>
-            <div className="mt-4 space-y-4">
-                {ratingsWithUsers
-                    .slice(0, 3)
-                    .map((rating, index) => (
-                        <div key={index} className="border-b py-4">
-                            <div className="flex items-center gap-2">
-                                <StarRating rating={rating.rating!} />
-                                <span className="font-medium">{rating.review.title}</span>
-                            </div>
-                            <div className='text-base'>{rating.review.description}</div>
-                            <div className="flex items-center gap-2">
-                                <Avatar>
-                                    <AvatarImage src={rating.user.imageUrl} />
-                                    <AvatarFallback>{rating.user.name}</AvatarFallback>
-                                </Avatar>
-                                <span className='text-base'>{rating.user.name}</span>
-                            </div>
+        <div>
+            {data
+                .slice(0, 3)
+                .map((rating, index) => (
+                    <div key={index} className={`${index != (data.length - 1) && "border-b"} py-4`}>
+                        <div className="flex items-center gap-2">
+                            <StarRating rating={rating.rating!} />
+                            <span className="font-medium">{rating.review.title}</span>
                         </div>
-                    ))}
-            </div>
+                        <div className='text-base'>{rating.review.description}</div>
+                        <ThumbnailGallery images={rating.review.images || []}/>
+                        <div className="flex items-center gap-2 mt-1">
+                            <span className='text-xs'>by {rating.user.name}</span>
+                            <span></span>
+                        </div>
+                    </div>
+                ))}
+                {totalPages > 1 && (
+                <Pagination>
+                    <PaginationContent>
+                        {currentPage > 1 && <PaginationItem>
+                            <PaginationPrevious
+
+                                href={`?page=${currentPage - 1}`}
+                            />
+                        </PaginationItem>}
+
+                        {Array.from({ length: totalPages }, (_, idx) => {
+                            const page = idx + 1
+                            return (
+                                <PaginationItem key={page}>
+                                    <PaginationLink
+                                        href={`?page=${page}`}
+                                        isActive={currentPage === page}
+                                    >
+                                        {page}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            )
+                        })}
+
+                        {currentPage < totalPages && <PaginationItem>
+                            <PaginationNext
+                                href={`?page=${currentPage + 1}`}
+                            />
+                        </PaginationItem>}
+                    </PaginationContent>
+                </Pagination>
+            )}
         </div>
     )
 }
 
-export default Reviews
+export default PaginatedReviews

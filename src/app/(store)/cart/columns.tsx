@@ -3,6 +3,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Product } from "../../../../sanity.types"
 import QuantitySelector from "@/components/QuantitySelector"
 import Link from "next/link"
+import { imageUrl } from "@/lib/imageUrl"
 
 export type CartItem = {
   product: Product
@@ -15,13 +16,13 @@ export const columns: ColumnDef<CartItem>[] = [
     header: () => <div className="text-left font-semibold">PRODUCT</div>,
     cell: ({ row }) => {
       const product = row.getValue("product") as Product
-      const imageUrl = product?.imageUrl
+      const url = product?.imageUrl || imageUrl(product?.image!)?.url() || "/placeholder.png"
 
       return (
-        <Link href={`/product/${product.slug?.current}`} className="flex items-center gap-4">
-          {imageUrl && (
+        <Link href={`/products/${product.slug?.current}`} className="flex items-center gap-4">
+          {url && (
             <img
-              src={imageUrl}
+              src={url}
               alt={product.name}
               className="h-24 w-24 rounded-lg object-cover shadow-sm"
             />

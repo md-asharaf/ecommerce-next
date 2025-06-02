@@ -4,10 +4,8 @@ import { blockContentType } from "./blockContentType";
 import { categoryType } from "./categoryType";
 import { productType } from "./productType";
 import { salesType } from "./saleType";
-import { orderType } from "./orderType";
-import { reviewType } from "./reviewType";
-import { ratingType } from "./ratingType";
+import { variantType } from "./variantType";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-    types: [blockContentType, categoryType, productType, orderType, salesType,reviewType,ratingType],
+    types: [blockContentType, categoryType, productType, variantType,salesType],
 };

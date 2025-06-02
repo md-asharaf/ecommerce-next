@@ -10,8 +10,6 @@ import AddToCartButton from "@/components/AddToCartButton";
 import ThumbnailGallery from "@/components/ThumbnailGallery";
 import StarRating from "@/components/StarRating";
 import { Button } from "@/components/ui/button";
-import { getRatingsCountAndAverageBySlug } from "@/sanity/lib/rating/getRatingsCountAndAverageBySlug";
-import { getRatingsBySlug } from "@/sanity/lib/rating/getRatingsBySlug";
 import Reviews from "@/components/Reviews";
 import Link from "next/link";
 
@@ -39,10 +37,8 @@ const ProductPage = async ({ params }: ProductPageProps) => {
   ];
 
   const images = [
-    product.image ? { asset: product.image } : null,
-    product.imageUrl ? { url: product.imageUrl } : null,
-  ].filter(Boolean);
-
+    product.image ? product.image : product.imageUrl,
+  ]
   const originalPrice = product.price ?? 0;
   const discountedPrice = originalPrice * 0.7;
   const discountPercentage = Math.round((1 - discountedPrice / originalPrice) * 100);
@@ -59,13 +55,13 @@ const ProductPage = async ({ params }: ProductPageProps) => {
     <div className="container mx-auto px-4 py-6 max-w-7xl bg-white min-h-[calc(100vh-4rem)]">
       <div className="grid gap-6 lg:grid-cols-12">
         <div className="lg:col-span-5 flex flex-col gap-4">
-          <div className="border border-gray-200 rounded">
+          <div className="border rounded">
             <div className="relative aspect-square overflow-hidden rounded-lg p-2">
               <Image
                 src={
-                  images[0]?.asset
-                    ? imageUrl(images[0].asset)?.url()
-                    : images[0]?.url || "/placeholder.png"
+                  typeof images[0] == 'object'
+                    ? imageUrl(images[0])?.url()
+                    : images[0] || "/placeholder.png"
                 }
                 alt={product.name || "Product Image"}
                 fill
@@ -81,9 +77,11 @@ const ProductPage = async ({ params }: ProductPageProps) => {
               )}
             </div>
             {images.length > 0 && (
-              <ThumbnailGallery
-                images={images.filter((img): img is { url?: string; asset?: any } => img !== null)}
-              />
+              <div className="border p-1.5">
+                <ThumbnailGallery
+                  images={images}
+                />
+              </div>
             )}
           </div>
           <div className="lg:col-span-2 lg:sticky lg:top-6 p-4 z-10">
@@ -203,13 +201,14 @@ const ProductPage = async ({ params }: ProductPageProps) => {
           )}
           {reviewCount > 0 &&
             <div>
-              <Reviews ratings={reviews} />
+              <h1 className="font-semibold text-xl my-4">Customer Reviews</h1>
+              <Reviews ratings={reviews} totalPages={1} currentPage={1} />
               {4 > 3 && (
                 <Link
                   href={`/product/${slug}/reviews`}
                   className="mt-4 inline-block text-blue-600 hover:underline"
                 >
-                  See all {reviews.length} reviews
+                  All {reviews.length} reviews
                 </Link>
               )}
             </div>

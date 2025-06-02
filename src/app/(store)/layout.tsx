@@ -9,6 +9,7 @@ import { draftMode } from 'next/headers'
 import DisableDraftMode from '@/components/DisableDraftMode'
 import { VisualEditing } from 'next-sanity'
 import { Inter } from 'next/font/google'
+import Footer from '@/components/Footer'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -43,6 +44,7 @@ export default async function RootLayout({
             </div>
           </main>
           <SanityLive />
+          <Footer />
         </body>
       </html>
     </ClerkProvider>

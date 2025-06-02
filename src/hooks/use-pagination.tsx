@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 export interface PaginationResult<T> {
     items: T[];
@@ -10,28 +10,25 @@ export interface PaginationResult<T> {
 export type FetchFunction<T> = (page: number) => Promise<PaginationResult<T>>;
 
 export type PaginationHook<T> = {
-    data: Array<T[]>;
+    data: T[];
     isLoading: boolean;
     currentPage: number;
     totalPages: number;
     totalCount: number;
-    fetchPage: (page: number) => void;
+    fetchPage: () => void;
 };
 
-export const usePagination = <T = unknown>(fetch: FetchFunction<T>, initialPage: number = 1): PaginationHook<T> => {
-    const [currentPage, setCurrentPage] = useState(initialPage);
-    const [data, setData] = useState<Array<T[]>>([]);
+export const usePagination = <T = unknown>({ fetch, initialData, initialTotalCount, initialTotalPages }: { fetch: FetchFunction<T>, initialData: T[], initialTotalPages: number, initialTotalCount: number }): PaginationHook<T> => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [data, setData] = useState<T[]>(initialData);
     const [isLoading, setIsLoading] = useState(false);
-    const [totalPages, setTotalPages] = useState(0);
-    const [totalCount, setTotalCount] = useState(0);
+    const [totalPages, setTotalPages] = useState(initialTotalPages);
+    const [totalCount, setTotalCount] = useState(initialTotalCount);
     const loadData = useCallback(async (page: number) => {
         setIsLoading(true);
         try {
             const { items, totalCount, totalPages } = await fetch(page);
-            if (items.length === 0) return;
-            const newData = data;
-            newData[page - 1] = items;
-            setData(newData);
+            setData((prevData) => [...prevData, ...items]);
             setCurrentPage(page);
             setTotalPages(totalPages);
             setTotalCount(totalCount);
@@ -40,16 +37,11 @@ export const usePagination = <T = unknown>(fetch: FetchFunction<T>, initialPage:
         }
     }, [fetch]);
 
-    useEffect(() => {
-        loadData(initialPage);
-    }, [loadData, initialPage]);
-
-    const fetchPage = (page: number) => {
-        if (!isLoading && page > 0 && page <= totalPages) {
-            loadData(page);
+    const fetchPage = () => {
+        if (!isLoading && currentPage > 0 && currentPage < totalPages) {
+            loadData(currentPage + 1);
         }
     };
-
     return {
         data,
         currentPage,

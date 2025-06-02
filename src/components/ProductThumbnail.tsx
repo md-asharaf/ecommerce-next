@@ -19,7 +19,7 @@ const ProductThumbnail = ({ product }: ProductThumbnailProps) => {
 
   return (
     <Link
-      href={`/product/${typeof product?.slug === 'string' ? product.slug : product?.slug?.current || ''}`}
+      href={`/products/${typeof product?.slug === 'string' ? product.slug : product?.slug?.current || ''}`}
       className={`group flex flex-col bg-white rounded-lg border border-gray-200 transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
         isOutOfStock && 'opacity-60'
       } w-full aspect-[3/4]`}

@@ -1,9 +1,7 @@
-import React from 'react'
-
-const page = () => {
+const CheckoutPage = () => {
   return (
-    <div>page</div>
+    <div>CheckoutPage</div>
   )
 }
 
-export default page
+export default CheckoutPage

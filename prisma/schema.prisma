@@ -15,21 +15,20 @@ datasource db {
 }
 
 model Customer {
-  id        String  @id @default(uuid())
+  id        String   @id @default(uuid())
   firstName String
   lastName  String
-  email     String  @unique
+  email     String   @unique
   phone     String?
   imageUrl  String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  cart        Cart?
-  orders      Order[]
-  CouponUsage CouponUsage[]
-  address     Address?
-  ratings     Rating[]
-  addressId   String
+  cart         Cart?
+  orders       Order[]
+  couponUsages CouponUsage[]
+  addresses    Address[]
+  ratings      Rating[]
 
   @@map("customers")
 }
@@ -54,44 +53,44 @@ model Order {
   finalAmount    Float
 
   couponId String?
+  razorpayOrderId String? @unique
 
   shippingAddressId String
 
   shippingCost Float @default(0)
   taxAmount    Float @default(0)
 
-  orderItems Item[]
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  items     Item[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   customer        Customer @relation(fields: [customerId], references: [id])
   shippingAddress Address  @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
-  Payment         Payment?
+  payment         Payment?
 
   @@map("orders")
 }
 
 model Item {
-  id         String  @id @default(uuid())
-  productId  String
-  variantId  String?
-  quantity   Int     @default(1)
-  unitPrice  Float
-  totalPrice Float
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  Cart      Cart?    @relation(fields: [cartId], references: [id])
-  cartId    String?
-  Order     Order?   @relation(fields: [orderId], references: [id])
-  orderId   String?
+  id            String   @id @default(uuid())
+  productId     String
+  variantId     String?
+  quantity      Int      @default(1)
+  unitPrice     Float
+  originalPrice Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  cart          Cart?    @relation(fields: [cartId], references: [id])
+  cartId        String?
+  order         Order?   @relation(fields: [orderId], references: [id])
+  orderId       String?
 
   @@map("items")
 }
 
 model Address {
   id         String  @id @default(uuid())
-  customerId String  @unique
+  customerId String
   fullName   String
   street     String
   city       String
@@ -103,8 +102,8 @@ model Address {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  order    Order[]  @relation("ShippingAddress")
-  Customer Customer @relation(fields: [customerId], references: [id])
+  orders   Order[]  @relation("ShippingAddress")
+  customer Customer @relation(fields: [customerId], references: [id])
 
   @@map("addresses")
 }

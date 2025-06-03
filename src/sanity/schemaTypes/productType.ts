@@ -143,24 +143,6 @@ export const productType = defineType({
                 layout: "tags",
             },
         }),
-        defineField({
-            name: "metadata",
-            title: "SEO Metadata",
-            type: "object",
-            fields: [
-                defineField({
-                    name: "metaTitle",
-                    title: "Meta Title",
-                    type: "string",
-                }),
-                defineField({
-                    name: "metaDescription",
-                    title: "Meta Description",
-                    type: "text",
-                    rows: 3,
-                }),
-            ],
-        }),
     ],
     preview: {
         select: {

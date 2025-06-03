@@ -28,12 +28,12 @@ const CartPage = () => {
     const groupedItems = useCartStore((state) => state.items)
     const totalPrice = useCartStore((state) => state.getTotalPrice())
     const totalItems = useCartStore((state) => state.getTotalItems())
-    const { user,isSignedIn } = useUser();
+    const { user, isSignedIn } = useUser();
     const router = useRouter();
-    const [isClient,setIsClient] = useState(false);
+    const [isClient, setIsClient] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [verificationStatus, setVerificationStatus] = useState<"loading" | "success" | "error" | null>(null);
-    
+
     const handleCheckout = async () => {
         if (!isSignedIn) return;
         setIsProcessing(true)
@@ -90,7 +90,7 @@ const CartPage = () => {
             setIsProcessing(false)
         }
     }
-    useEffect(()=>setIsClient(true),[])
+    useEffect(() => setIsClient(true), [])
 
     const data = groupedItems.map((item) => {
         return {
@@ -98,8 +98,8 @@ const CartPage = () => {
             quantity: item.quantity,
         }
     })
-    if(!isClient){
-        return <LoadingSpinner/>
+    if (!isClient) {
+        return <LoadingSpinner />
     }
     if (groupedItems.length == 0) {
         return <div className="container mx-auto p-8 max-w-6xl bg-white min-h-[calc(100vh-4rem)] text-center">

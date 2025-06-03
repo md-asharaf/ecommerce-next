@@ -67,7 +67,8 @@ export const salesType = defineType({
             name: "usageLimit",
             title: "Usage Limit",
             type: "number",
-            description: "Maximum number of times this sale can be used (leave empty for unlimited)",
+            description:
+                "Maximum number of times this sale can be used (leave empty for unlimited)",
         }),
         defineField({
             name: "minOrderAmount",
@@ -86,9 +87,10 @@ export const salesType = defineType({
         },
         prepare({ title, discountType, discountValue, isActive, couponCode }) {
             const status = isActive ? "Active" : "Inactive";
-            const discountDisplay = discountType === "percentage" 
-                ? `${discountValue}% off` 
-                : `$${discountValue} off`;
+            const discountDisplay =
+                discountType === "percentage"
+                    ? `${discountValue}% off`
+                    : `$${discountValue} off`;
             return {
                 title: `${title} - ${status}`,
                 subtitle: `${discountDisplay} - Code: ${couponCode}`,

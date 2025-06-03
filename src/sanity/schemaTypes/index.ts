@@ -7,5 +7,11 @@ import { salesType } from "./saleType";
 import { variantType } from "./variantType";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-    types: [blockContentType, categoryType, productType, variantType,salesType],
+    types: [
+        blockContentType,
+        productType,
+        variantType,
+        categoryType,
+        salesType,
+    ],
 };

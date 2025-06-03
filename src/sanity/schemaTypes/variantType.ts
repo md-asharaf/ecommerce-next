@@ -6,35 +6,41 @@ export const variantType = defineType({
     type: "document",
     fields: [
         defineField({
+            name: "productId",
+            title: "Product Id",
+            type: "reference",
+            to: [{ type: "product" }],
+        }),
+        defineField({
             name: "color",
             title: "Color",
             type: "string",
-            description: "Optional color variant"
+            description: "Optional color variant",
         }),
         defineField({
             name: "size",
             title: "Size",
             type: "string",
-            description: "Optional size variant"
+            description: "Optional size variant",
         }),
         defineField({
             name: "stock",
             title: "Stock",
             type: "number",
-            validation: (Rule) => Rule.required().min(0)
+            validation: (Rule) => Rule.required().min(0),
         }),
         defineField({
             name: "price",
             title: "Price",
             type: "number",
-            validation: (Rule) => Rule.required().min(0)
+            validation: (Rule) => Rule.required().min(0),
         }),
         defineField({
             name: "sku",
             title: "SKU",
             type: "string",
-            validation: (Rule) => Rule.required()
-        })
+            validation: (Rule) => Rule.required(),
+        }),
     ],
     preview: {
         select: {
@@ -42,14 +48,14 @@ export const variantType = defineType({
             subtitle: "color",
             media: "images.0",
             price: "price",
-            stock: "stock"
+            stock: "stock",
         },
         prepare({ title, subtitle, media, price, stock }) {
             return {
                 title,
-                subtitle: `${subtitle || 'No color'} | $${price} | Stock: ${stock}`,
-                media
-            }
-        }
-    }
-})
+                subtitle: `${subtitle || "No color"} | $${price} | Stock: ${stock}`,
+                media,
+            };
+        },
+    },
+});
